@@ -195,50 +195,64 @@ const state = {lessonIdx:0,tab:"vocab",arrIdx:0,arrAns:[],arrBank:[],matchSelCN:
 // ========= TTS =========
 
 let voices = [];
+let unlocked = false;
 
 function loadVoices() {
   voices = speechSynthesis.getVoices();
 }
-
-// rất quan trọng cho iPhone
 speechSynthesis.onvoiceschanged = loadVoices;
 loadVoices();
+// thử reload voices nhiều lần cho iPhone
+setTimeout(loadVoices, 300);
+setTimeout(loadVoices, 1000);
 
-let unlocked = false;
-
-document.addEventListener('click', () => {
-  if (!unlocked) {
-    const u = new SpeechSynthesisUtterance(".");
+function unlockTTS() {
+  if (unlocked) return;
+  try {
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0;
     speechSynthesis.speak(u);
-    speechSynthesis.cancel();
     unlocked = true;
-  }
-});
+  } catch(e) {}
+}
 
 function speak(text) {
-  if (!('speechSynthesis' in window)) { alert('Trình duyệt không hỗ trợ phát âm.'); return; }
-  window.speechSynthesis.cancel();
+  if (!('speechSynthesis' in window)) {
+    alert('Trình duyệt không hỗ trợ phát âm.');
+    return;
+  }
+
+  // ✅ unlock iOS lần đầu (ngay trong click)
+  unlockTTS();
+
+  // ✅ chỉ cancel nếu ĐANG nói (tránh bug iOS)
+  if (speechSynthesis.speaking || speechSynthesis.pending) {
+    speechSynthesis.cancel();
+  }
+
+  // reload voices nếu rỗng
+  if (!voices.length) voices = speechSynthesis.getVoices();
+
   const u = new SpeechSynthesisUtterance(text);
-  
-	const zhVoice = voices.find(v => 
-		v.lang === "zh-TW" || v.lang === "zh-CN"
-	  );
-
-  u.lang = zhVoice ? zhVoice.lang : "zh-TW";
-  u.rate = 0.7;
+  const zhVoice = voices.find(v =>
+     v.lang === 'zh-CN'
+  );
+  if (zhVoice) u.voice = zhVoice;
+  u.lang  = zhVoice ? zhVoice.lang : 'zh-TW'; // iPhone có zh-CN sẵn
+  u.rate  = 0.9;   // ✅ không để 0.7 (iOS hay bug)
   u.pitch = 1.0;
-  window.speechSynthesis.speak(u);
-  
-	if (!zhVoice) {
-	  const audio = new Audio(`audio/${text}.mp3`);
-	  audio.play();
-	}
+  u.volume = 1.0;
 
+  // ✅ delay nhỏ để iPhone kịp chuẩn bị
+  setTimeout(() => speechSynthesis.speak(u), 60);
 }
+
 function stopSpeak() { window.speechSynthesis.cancel(); }
+
 function spk(t, big) {
   const cls = big ? 'spk big' : 'spk';
   const enc = JSON.stringify(t).replace(/"/g, '&quot;');
+  // ✅ BỎ event.stopPropagation() — chính nó chặn unlock iOS
   return `<button class="${cls}" onclick="event.stopPropagation();speak(${enc})" title="Phát âm"><i class="fa-solid fa-volume-high"></i></button>`;
 }
 
