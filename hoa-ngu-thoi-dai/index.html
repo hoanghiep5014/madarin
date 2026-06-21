@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>華語學習中心 — Trung tâm học tiếng Trung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{--red:#c8102e;--gold:#e8a838;--bg:#fff8e7;--paper:#ffffff;--text:#2d2d2d;--muted:#7a7a7a;--soft-red:#ffe4e6;--kids-green:#43A047;--kids-amber:#FFB300;--kids-soft:#F1F8E9;}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Noto Sans',-apple-system,sans-serif;min-height:100vh;}
+.cn{font-family:'Noto Sans TC',sans-serif;}
+.header{background:linear-gradient(135deg,#c8102e 0%,#e8a838 100%);color:#fff;padding:50px 20px 40px;text-align:center;border-radius:0 0 32px 32px;box-shadow:0 6px 22px rgba(200,16,46,.22);position:relative;overflow:hidden;}
+.header::before{content:"中";position:absolute;font-family:'Noto Sans TC';font-size:300px;opacity:.06;top:-80px;right:-30px;font-weight:700;}
+.header h1{margin:0;font-family:'Noto Sans TC';font-size:3em;font-weight:700;letter-spacing:3px;position:relative;}
+.header .sub{margin-top:10px;opacity:.95;font-size:1.15em;font-weight:500;position:relative;}
+.header .desc{margin-top:8px;opacity:.85;font-size:.95em;position:relative;}
+.container{max-width:1100px;margin:-30px auto 0;padding:0 18px 60px;position:relative;z-index:2;}
+.intro{background:var(--paper);border-radius:20px;padding:24px 28px;box-shadow:0 4px 16px rgba(200,16,46,.1);margin-bottom:30px;border-left:5px solid var(--gold);}
+.intro h2{margin:0 0 8px;color:var(--red);font-size:1.4em;}
+.intro h2 i{margin-right:8px;}
+.intro p{margin:0;color:var(--muted);line-height:1.7;}
+.section-title{font-size:1.5em;color:var(--red);font-weight:700;margin:30px 0 16px;display:flex;align-items:center;gap:10px;}
+.section-title i{background:var(--gold);color:#fff;padding:8px;border-radius:10px;font-size:.8em;}
+.section-title.kids{color:var(--kids-green);}
+.section-title.kids i{background:var(--kids-amber);}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+.card{background:var(--paper);border-radius:18px;padding:24px;text-decoration:none;color:inherit;box-shadow:0 4px 14px rgba(0,0,0,.08);transition:all .3s;border:2px solid transparent;display:block;position:relative;overflow:hidden;}
+.card::before{content:"";position:absolute;top:0;right:0;width:80px;height:80px;background:linear-gradient(135deg,var(--gold),var(--red));border-radius:0 0 0 80px;opacity:.12;transition:all .3s;}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 28px rgba(200,16,46,.25);border-color:var(--gold);}
+.card:hover::before{opacity:.25;width:100px;height:100px;}
+.card.kids::before{background:linear-gradient(135deg,var(--kids-amber),var(--kids-green));}
+.card.kids:hover{box-shadow:0 12px 28px rgba(76,175,80,.25);border-color:var(--kids-green);}
+.card.kids .icon{background:linear-gradient(135deg,var(--kids-green),var(--kids-amber));box-shadow:0 4px 12px rgba(76,175,80,.3);}
+.card.kids h3{color:var(--kids-green);}
+.card.kids .arrow{color:var(--kids-green);}
+.card.kids .badge{background:var(--kids-soft);color:var(--kids-green);}
+.card.kids .badge.new{background:#FFF9C4;color:#F57C00;}
+.card.kids .stats span i{color:var(--kids-amber);}
+.card.coming-soon{opacity:.65;cursor:not-allowed;}
+.card.coming-soon:hover{transform:none;border-color:transparent;}
+.card .icon{width:54px;height:54px;background:linear-gradient(135deg,var(--red),var(--gold));color:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.5em;margin-bottom:14px;box-shadow:0 4px 12px rgba(200,16,46,.3);}
+.card .badge{display:inline-block;background:var(--soft-red);color:var(--red);padding:3px 10px;border-radius:12px;font-size:.72em;font-weight:600;margin-bottom:8px;}
+.card .badge.new{background:#d4edda;color:#155724;}
+.card .badge.soon{background:#f0f0f0;color:#888;}
+.card h3{margin:6px 0;font-family:'Noto Sans TC';color:var(--red);font-size:1.3em;}
+.card .vn-title{color:#555;font-size:1em;font-weight:600;margin-bottom:10px;}
+.card .description{color:var(--muted);font-size:.92em;line-height:1.55;margin-bottom:14px;min-height:42px;}
+.card .stats{display:flex;gap:14px;flex-wrap:wrap;border-top:1px dashed #eee;padding-top:12px;font-size:.82em;color:var(--muted);}
+.card .stats span i{margin-right:4px;color:var(--gold);}
+.card .arrow{position:absolute;bottom:18px;right:20px;color:var(--red);font-size:1.2em;transition:transform .25s;}
+.card:hover .arrow{transform:translateX(4px);}
+footer{text-align:center;color:var(--muted);font-size:.9em;padding:30px 20px;border-top:1px solid #eee;margin-top:40px;}
+@media (max-width:600px){.header h1{font-size:2.3em;}.header::before{font-size:200px;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1 class="cn">華語學習中心</h1>
+  <div class="sub">Trung tâm học tiếng Trung</div>
+  <div class="desc">🎯 Học · 練習 Luyện · 進步 Tiến bộ</div>
+</div>
+
+<div class="container">
+  <div class="intro">
+    <h2><i class="fa-solid fa-book-open"></i>Chào mừng bạn!</h2>
+    <p>Đây là bộ sưu tập các ứng dụng học tiếng Trung phồn thể (Đài Loan) miễn phí. Mỗi bài học có flashcard từ vựng, ngữ pháp, đoạn văn, trò chơi nối từ, sắp xếp câu, phát âm TTS và tập viết chữ Hán theo thứ tự nét.</p>
+  </div>
+
+  <div class="section-title"><i class="fa-solid fa-graduation-cap"></i>Giáo trình người lớn</div>
+  <div class="cards-grid">
+
+    <a href="hoa-ngu-thoi-dai-1-v4.html" class="card">
+      <div class="icon"><i class="fa-solid fa-1"></i></div>
+      <div class="badge new">✨ Có sẵn</div>
+      <h3 class="cn">時代華語 第一冊</h3>
+      <div class="vn-title">Hoa Ngữ Thời Đại — Quyển 1</div>
+      <div class="description">Giáo trình A1 với 16 bài học cơ bản — phù hợp người mới bắt đầu học tiếng Trung phồn thể.</div>
+      <div class="stats">
+        <span><i class="fa-solid fa-clone"></i>384 từ vựng</span>
+        <span><i class="fa-solid fa-book"></i>96 ngữ pháp</span>
+        <span><i class="fa-solid fa-pen-nib"></i>Bút thuận</span>
+      </div>
+      <div class="arrow"><i class="fa-solid fa-arrow-right"></i></div>
+    </a>
+
+    <div class="card coming-soon">
+      <div class="icon"><i class="fa-solid fa-2"></i></div>
+      <div class="badge soon">🕓 Sắp ra mắt</div>
+      <h3 class="cn">時代華語 第二冊</h3>
+      <div class="vn-title">Hoa Ngữ Thời Đại — Quyển 2</div>
+      <div class="description">Giáo trình A2 — tiếp nối Quyển 1 với chủ đề thực tế hơn: du lịch, ẩm thực, công sở...</div>
+      <div class="stats">
+        <span><i class="fa-solid fa-clock"></i>Đang phát triển</span>
+      </div>
+    </div>
+
+    <div class="card coming-soon">
+      <div class="icon"><i class="fa-solid fa-trophy"></i></div>
+      <div class="badge soon">🕓 Sắp ra mắt</div>
+      <h3 class="cn">TOCFL 模擬考</h3>
+      <div class="vn-title">Luyện thi TOCFL</div>
+      <div class="description">Đề thi mẫu cấp độ Novice / Band A — ôn luyện trước kỳ thi năng lực Hoa ngữ TOCFL.</div>
+      <div class="stats">
+        <span><i class="fa-solid fa-clock"></i>Đang phát triển</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-title kids"><i class="fa-solid fa-child-reaching"></i>Giáo trình trẻ em</div>
+  <div class="cards-grid">
+
+    <a href="lets-learn-mandarin-1a-v2.html" class="card kids">
+      <div class="icon"><i class="fa-solid fa-star"></i></div>
+      <div class="badge new">🎈 Mới!</div>
+      <h3 class="cn">學華語向前走 1A</h3>
+      <div class="vn-title">Let's Learn Mandarin 1A</div>
+      <div class="description">Giáo trình cho bé 6-12 tuổi — 6 bài học với từ vựng vui, bài hát thiếu nhi, theme xanh-vàng tươi sáng.</div>
+      <div class="stats">
+        <span><i class="fa-solid fa-clone"></i>84 từ vựng</span>
+        <span><i class="fa-solid fa-music"></i>6 bài hát</span>
+        <span><i class="fa-solid fa-pen-nib"></i>Bút thuận</span>
+      </div>
+      <div class="arrow"><i class="fa-solid fa-arrow-right"></i></div>
+    </a>
+
+    <a href="lets-learn-mandarin-1b.html" class="card kids">
+      <div class="icon"><i class="fa-solid fa-star"></i></div>
+      <div class="badge new">🎈 Mới!</div>
+      <h3 class="cn">學華語向前走 1B</h3>
+      <div class="vn-title">Let's Learn Mandarin 1B</div>
+      <div class="description">Tiếp nối 1A — 6 bài (Bài 7-12): thể thao, màu sắc, trường học, giờ giấc, động vật. Có bài hát kèm theo.</div>
+      <div class="stats">
+        <span><i class="fa-solid fa-clone"></i>84 từ vựng</span>
+        <span><i class="fa-solid fa-music"></i>6 bài hát</span>
+        <span><i class="fa-solid fa-pen-nib"></i>Bút thuận</span>
+      </div>
+      <div class="arrow"><i class="fa-solid fa-arrow-right"></i></div>
+    </a>
+
+    <div class="card kids coming-soon">
+      <div class="icon"><i class="fa-solid fa-2"></i></div>
+      <div class="badge soon">🕓 Sắp ra mắt</div>
+      <h3 class="cn">學華語向前走 2A · 2B</h3>
+      <div class="vn-title">Let's Learn Mandarin 2A · 2B</div>
+      <div class="description">Trình độ A2 cho bé đã hoàn thành Quyển 1 — chủ đề phong phú hơn về sở thích, cuộc sống.</div>
+      <div class="stats">
+        <span><i class="fa-solid fa-clock"></i>Đang phát triển</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-title"><i class="fa-solid fa-tools"></i>Công cụ</div>
+  <div class="cards-grid">
+
+    <div class="card coming-soon">
+      <div class="icon"><i class="fa-solid fa-pen-fancy"></i></div>
+      <div class="badge soon">🕓 Sắp ra mắt</div>
+      <h3 class="cn">漢字筆畫</h3>
+      <div class="vn-title">Bộ tra cứu chữ Hán</div>
+      <div class="description">Tra cứu thứ tự nét viết, pinyin, nghĩa của bất kỳ chữ Hán nào — dùng Hanzi Writer.</div>
+      <div class="stats">
+        <span><i class="fa-solid fa-clock"></i>Đang phát triển</span>
+      </div>
+    </div>
+
+    <div class="card coming-soon">
+      <div class="icon"><i class="fa-solid fa-headphones"></i></div>
+      <div class="badge soon">🕓 Sắp ra mắt</div>
+      <h3 class="cn">聽力練習</h3>
+      <div class="vn-title">Luyện nghe</div>
+      <div class="description">Các bài luyện nghe theo trình độ với TTS giọng zh-TW chuẩn Đài Loan.</div>
+      <div class="stats">
+        <span><i class="fa-solid fa-clock"></i>Đang phát triển</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <p>© Trung tâm học tiếng Trung · Dùng miễn phí cho mục đích học tập cá nhân</p>
+  <p>🇹🇼 繁體中文 · Phồn thể (Đài Loan)</p>
+</footer>
+
+</body>
+</html>

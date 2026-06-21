@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Học tiếng Trung – Hoa Ngữ Thời Đại 1</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+  body { font-family: "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
+  .hanzi { font-family: "Noto Serif TC", "Microsoft JhengHei", serif; }
+  .flip-card { perspective: 1200px; }
+  .flip-card-inner { transition: transform .6s; transform-style: preserve-3d; position: relative; width: 100%; height: 100%; }
+  .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+  .flip-face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 1rem; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:1rem;}
+  .flip-back { transform: rotateY(180deg); }
+  .chip { cursor:pointer; user-select:none; transition: all .15s; }
+  .chip:hover { transform: translateY(-2px); }
+  .match-btn.correct { background:#bbf7d0 !important; color:#065f46 !important; cursor:default; }
+  .match-btn.wrong { background:#fecaca !important; color:#991b1b !important; }
+  .match-btn.selected { outline:3px solid #6366f1; }
+  .lesson-btn.active { background: linear-gradient(135deg,#6366f1,#a855f7); color:white; }
+</style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-pink-50 min-h-screen">
+
+<header class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 text-white shadow-lg">
+  <div class="max-w-7xl mx-auto px-6 py-6">
+    <h1 class="text-3xl md:text-4xl font-extrabold flex items-center gap-3">
+      <i class="fa-solid fa-graduation-cap"></i>
+      Học Tiếng Trung – Hoa Ngữ Thời Đại <span class="bg-white/20 px-2 rounded">1</span>
+    </h1>
+    <p class="opacity-90 mt-1">時代華語 1 · 16 bài học · Phồn thể (Đài Loan)</p>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 md:px-6 py-6">
+
+  <!-- Lesson selector -->
+  <section class="bg-white rounded-2xl shadow p-4 mb-6">
+    <h2 class="text-lg font-bold mb-3 text-gray-700"><i class="fa-solid fa-book-open mr-2 text-indigo-500"></i>Chọn bài học</h2>
+    <div id="lessonGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2"></div>
+  </section>
+
+  <!-- Tabs -->
+  <section class="bg-white rounded-2xl shadow overflow-hidden">
+    <div id="lessonHeader" class="px-6 py-4 bg-gradient-to-r from-indigo-50 to-pink-50 border-b"></div>
+    <div class="flex flex-wrap border-b" id="tabBar">
+      <button data-tab="vocab" class="tab-btn px-5 py-3 font-semibold text-gray-600 hover:bg-indigo-50"><i class="fa-solid fa-layer-group mr-2"></i>Từ vựng</button>
+      <button data-tab="grammar" class="tab-btn px-5 py-3 font-semibold text-gray-600 hover:bg-indigo-50"><i class="fa-solid fa-pen-ruler mr-2"></i>Ngữ pháp</button>
+      <button data-tab="passage" class="tab-btn px-5 py-3 font-semibold text-gray-600 hover:bg-indigo-50"><i class="fa-solid fa-scroll mr-2"></i>Đoạn văn</button>
+      <button data-tab="match" class="tab-btn px-5 py-3 font-semibold text-gray-600 hover:bg-indigo-50"><i class="fa-solid fa-shuffle mr-2"></i>Nối từ</button>
+      <button data-tab="order" class="tab-btn px-5 py-3 font-semibold text-gray-600 hover:bg-indigo-50"><i class="fa-solid fa-arrow-down-wide-short mr-2"></i>Sắp xếp câu</button>
+    </div>
+    <div id="tabContent" class="p-6 min-h-[420px]"></div>
+  </section>
+
+  <footer class="text-center text-gray-500 text-sm py-6">
+    © Web học Hoa Ngữ Thời Đại 1 · Dùng cho mục đích học tập cá nhân
+  </footer>
+</main>
+
+<script>
+/* ============================================================
+   DỮ LIỆU 16 BÀI HỌC (時代華語 1)
+   Bạn có thể bổ sung thêm từ vựng / ngữ pháp tại đây.
+   ============================================================ */
+const LESSONS = [
+  /* ---------------- BÀI 1 ---------------- */
+  {
+    id:1, titleZh:"歡迎你來臺灣", titleVi:"Hoan nghênh bạn đến Đài Loan",
+    vocab:[
+      {hanzi:"歡迎", pinyin:"huānyíng", hv:"Hoan nghênh", vi:"chào mừng", icon:"fa-solid fa-handshake",
+       exampleZh:"歡迎你來臺灣。", examplePy:"Huānyíng nǐ lái Táiwān.", exampleVi:"Chào mừng bạn đến Đài Loan."},
+      {hanzi:"你好", pinyin:"nǐ hǎo", hv:"Nễ hảo", vi:"xin chào", icon:"fa-solid fa-hand-wave",
+       exampleZh:"你好，我是李明。", examplePy:"Nǐ hǎo, wǒ shì Lǐ Míng.", exampleVi:"Xin chào, tôi là Lý Minh."},
+      {hanzi:"請", pinyin:"qǐng", hv:"Thỉnh", vi:"mời, xin", icon:"fa-solid fa-hands-praying",
+       exampleZh:"請喝茶。", examplePy:"Qǐng hē chá.", exampleVi:"Mời uống trà."},
+      {hanzi:"謝謝", pinyin:"xièxie", hv:"Tạ tạ", vi:"cảm ơn", icon:"fa-solid fa-heart",
+       exampleZh:"謝謝你。", examplePy:"Xièxie nǐ.", exampleVi:"Cảm ơn bạn."},
+      {hanzi:"先生", pinyin:"xiānshēng", hv:"Tiên sinh", vi:"ngài, anh, ông", icon:"fa-solid fa-user-tie",
+       exampleZh:"王先生是老師。", examplePy:"Wáng xiānshēng shì lǎoshī.", exampleVi:"Ông Vương là giáo viên."},
+      {hanzi:"小姐", pinyin:"xiǎojiě", hv:"Tiểu thư", vi:"cô (gái)", icon:"fa-solid fa-user",
+       exampleZh:"陳小姐很漂亮。", examplePy:"Chén xiǎojiě hěn piàoliang.", exampleVi:"Cô Trần rất xinh."},
+      {hanzi:"臺灣", pinyin:"Táiwān", hv:"Đài Loan", vi:"Đài Loan", icon:"fa-solid fa-flag",
+       exampleZh:"我喜歡臺灣。", examplePy:"Wǒ xǐhuān Táiwān.", exampleVi:"Tôi thích Đài Loan."},
+      {hanzi:"美國", pinyin:"Měiguó", hv:"Mỹ quốc", vi:"nước Mỹ", icon:"fa-solid fa-globe",
+       exampleZh:"他是美國人。", examplePy:"Tā shì Měiguórén.", exampleVi:"Anh ấy là người Mỹ."},
+      {hanzi:"老師", pinyin:"lǎoshī", hv:"Lão sư", vi:"giáo viên", icon:"fa-solid fa-chalkboard-user",
+       exampleZh:"她是中文老師。", examplePy:"Tā shì Zhōngwén lǎoshī.", exampleVi:"Cô ấy là giáo viên tiếng Trung."},
+      {hanzi:"學生", pinyin:"xuéshēng", hv:"Học sinh", vi:"học sinh", icon:"fa-solid fa-user-graduate",
+       exampleZh:"我是學生。", examplePy:"Wǒ shì xuéshēng.", exampleVi:"Tôi là học sinh."},
+      {hanzi:"姓", pinyin:"xìng", hv:"Tính", vi:"họ", icon:"fa-solid fa-id-card",
+       exampleZh:"我姓陳。", examplePy:"Wǒ xìng Chén.", exampleVi:"Tôi họ Trần."},
+      {hanzi:"叫", pinyin:"jiào", hv:"Khiếu", vi:"tên là, gọi là", icon:"fa-solid fa-signature",
+       exampleZh:"我叫李明。", examplePy:"Wǒ jiào Lǐ Míng.", exampleVi:"Tôi tên là Lý Minh."}
+    ],
+    grammar:[
+      {title:"Câu khẳng định với 是 (là)", formula:"A + 是 + B",
+       explain:"Dùng 是 để xác nhận A là B (giới thiệu danh tính, nghề nghiệp, quốc tịch).",
+       examples:[
+         {zh:"我是學生。", py:"Wǒ shì xuéshēng.", vi:"Tôi là học sinh."},
+         {zh:"他是美國人。", py:"Tā shì Měiguórén.", vi:"Anh ấy là người Mỹ."},
+         {zh:"王先生是老師。", py:"Wáng xiānshēng shì lǎoshī.", vi:"Ông Vương là giáo viên."}
+       ]},
+      {title:"Hỏi tên với 姓 / 叫", formula:"您貴姓？ / 你叫什麼名字？",
+       explain:"您貴姓 dùng lịch sự để hỏi họ. 你叫什麼名字 hỏi cả họ tên.",
+       examples:[
+         {zh:"您貴姓？— 我姓陳。", py:"Nín guìxìng? — Wǒ xìng Chén.", vi:"Quý danh của ngài? — Tôi họ Trần."},
+         {zh:"你叫什麼名字？— 我叫李明。", py:"Nǐ jiào shénme míngzi? — Wǒ jiào Lǐ Míng.", vi:"Bạn tên gì? — Tôi tên Lý Minh."}
+       ]},
+      {title:"Câu nghi vấn với 嗎", formula:"Câu khẳng định + 嗎？",
+       explain:"Thêm 嗎 cuối câu trần thuật để biến thành câu hỏi Có/Không.",
+       examples:[
+         {zh:"你是學生嗎？", py:"Nǐ shì xuéshēng ma?", vi:"Bạn là học sinh phải không?"},
+         {zh:"他是老師嗎？", py:"Tā shì lǎoshī ma?", vi:"Anh ấy là giáo viên à?"}
+       ]}
+    ],
+    passage:{
+      title:"Giới thiệu bản thân",
+      sentences:[
+        {zh:"大家好！", py:"Dàjiā hǎo!", vi:"Chào mọi người!"},
+        {zh:"我姓李，叫李明。", py:"Wǒ xìng Lǐ, jiào Lǐ Míng.", vi:"Tôi họ Lý, tên Lý Minh."},
+        {zh:"我是學生，從美國來。", py:"Wǒ shì xuéshēng, cóng Měiguó lái.", vi:"Tôi là học sinh, đến từ Mỹ."},
+        {zh:"我很高興來臺灣學中文。", py:"Wǒ hěn gāoxìng lái Táiwān xué Zhōngwén.", vi:"Tôi rất vui được đến Đài Loan học tiếng Trung."},
+        {zh:"謝謝大家！", py:"Xièxie dàjiā!", vi:"Cảm ơn mọi người!"}
+      ]
+    },
+    dialogue:[
+      {role:"A", zh:"你好！您貴姓？", py:"Nǐ hǎo! Nín guìxìng?", vi:"Xin chào! Quý danh của ngài?"},
+      {role:"B", zh:"我姓陳，叫陳月美。你呢？", py:"Wǒ xìng Chén, jiào Chén Yuèměi. Nǐ ne?", vi:"Tôi họ Trần, tên Trần Nguyệt Mỹ. Còn bạn?"},
+      {role:"A", zh:"我叫李明。你是學生嗎？", py:"Wǒ jiào Lǐ Míng. Nǐ shì xuéshēng ma?", vi:"Tôi tên Lý Minh. Bạn là học sinh à?"},
+      {role:"B", zh:"是的，我是學生。歡迎你來臺灣！", py:"Shì de, wǒ shì xuéshēng. Huānyíng nǐ lái Táiwān!", vi:"Vâng, tôi là học sinh. Chào mừng bạn đến Đài Loan!"},
+      {role:"A", zh:"謝謝！", py:"Xièxie!", vi:"Cảm ơn!"}
+    ],
+    matching:[
+      {zh:"歡迎", vi:"chào mừng"},
+      {zh:"謝謝", vi:"cảm ơn"},
+      {zh:"老師", vi:"giáo viên"},
+      {zh:"學生", vi:"học sinh"},
+      {zh:"臺灣", vi:"Đài Loan"},
+      {zh:"美國", vi:"nước Mỹ"},
+      {zh:"姓", vi:"họ"},
+      {zh:"叫", vi:"tên là"}
+    ],
+    sentenceOrder:[
+      {words:["我","是","學生","。"], correct:["我","是","學生","。"], py:"Wǒ shì xuéshēng.", vi:"Tôi là học sinh."},
+      {words:["你","叫","什麼","名字","？"], correct:["你","叫","什麼","名字","？"], py:"Nǐ jiào shénme míngzi?", vi:"Bạn tên là gì?"},
+      {words:["歡迎","你","來","臺灣","。"], correct:["歡迎","你","來","臺灣","。"], py:"Huānyíng nǐ lái Táiwān.", vi:"Chào mừng bạn đến Đài Loan."},
+      {words:["他","是","美國","人","嗎","？"], correct:["他","是","美國","人","嗎","？"], py:"Tā shì Měiguórén ma?", vi:"Anh ấy là người Mỹ à?"},
+      {words:["我","姓","李","，","叫","李明","。"], correct:["我","姓","李","，","叫","李明","。"], py:"Wǒ xìng Lǐ, jiào Lǐ Míng.", vi:"Tôi họ Lý, tên Lý Minh."}
+    ]
+  },
+
+  /* ---------------- BÀI 2 ---------------- */
+  {
+    id:2, titleZh:"我的家人", titleVi:"Gia đình tôi",
+    vocab:[
+      {hanzi:"爸爸", pinyin:"bàba", hv:"Ba ba", vi:"bố", icon:"fa-solid fa-user",
+       exampleZh:"我爸爸是醫生。", examplePy:"Wǒ bàba shì yīshēng.", exampleVi:"Bố tôi là bác sĩ."},
+      {hanzi:"媽媽", pinyin:"māma", hv:"Ma ma", vi:"mẹ", icon:"fa-solid fa-user",
+       exampleZh:"媽媽很漂亮。", examplePy:"Māma hěn piàoliang.", exampleVi:"Mẹ rất xinh."},
+      {hanzi:"哥哥", pinyin:"gēge", hv:"Ca ca", vi:"anh trai", icon:"fa-solid fa-person",
+       exampleZh:"我有一個哥哥。", examplePy:"Wǒ yǒu yí ge gēge.", exampleVi:"Tôi có một anh trai."},
+      {hanzi:"姐姐", pinyin:"jiějie", hv:"Tỷ tỷ", vi:"chị gái", icon:"fa-solid fa-person-dress",
+       exampleZh:"姐姐是老師。", examplePy:"Jiějie shì lǎoshī.", exampleVi:"Chị gái là giáo viên."},
+      {hanzi:"弟弟", pinyin:"dìdi", hv:"Đệ đệ", vi:"em trai", icon:"fa-solid fa-child",
+       exampleZh:"弟弟很可愛。", examplePy:"Dìdi hěn kě'ài.", exampleVi:"Em trai rất dễ thương."},
+      {hanzi:"妹妹", pinyin:"mèimei", hv:"Muội muội", vi:"em gái", icon:"fa-solid fa-child-dress",
+       exampleZh:"妹妹喜歡貓。", examplePy:"Mèimei xǐhuān māo.", exampleVi:"Em gái thích mèo."},
+      {hanzi:"家", pinyin:"jiā", hv:"Gia", vi:"gia đình, nhà", icon:"fa-solid fa-house",
+       exampleZh:"我家有五個人。", examplePy:"Wǒ jiā yǒu wǔ ge rén.", exampleVi:"Nhà tôi có 5 người."},
+      {hanzi:"有", pinyin:"yǒu", hv:"Hữu", vi:"có", icon:"fa-solid fa-check",
+       exampleZh:"我有一隻狗。", examplePy:"Wǒ yǒu yì zhī gǒu.", exampleVi:"Tôi có một con chó."},
+      {hanzi:"沒有", pinyin:"méiyǒu", hv:"Một hữu", vi:"không có", icon:"fa-solid fa-xmark",
+       exampleZh:"我沒有姐姐。", examplePy:"Wǒ méiyǒu jiějie.", exampleVi:"Tôi không có chị gái."},
+      {hanzi:"幾", pinyin:"jǐ", hv:"Kỷ", vi:"mấy (hỏi số ít)", icon:"fa-solid fa-question",
+       exampleZh:"你家有幾個人？", examplePy:"Nǐ jiā yǒu jǐ ge rén?", exampleVi:"Nhà bạn có mấy người?"},
+      {hanzi:"個", pinyin:"ge", hv:"Cá", vi:"cái, người (lượng từ)", icon:"fa-solid fa-cube",
+       exampleZh:"三個學生", examplePy:"sān ge xuéshēng", exampleVi:"ba học sinh"},
+      {hanzi:"都", pinyin:"dōu", hv:"Đô", vi:"đều", icon:"fa-solid fa-users",
+       exampleZh:"我們都是學生。", examplePy:"Wǒmen dōu shì xuéshēng.", exampleVi:"Chúng tôi đều là học sinh."}
+    ],
+    grammar:[
+      {title:"Câu sở hữu với 有 / 沒有", formula:"S + 有/沒有 + O",
+       explain:"有 = có; phủ định dùng 沒有, không dùng 不有.",
+       examples:[
+         {zh:"我有兩個哥哥。", py:"Wǒ yǒu liǎng ge gēge.", vi:"Tôi có hai anh trai."},
+         {zh:"他沒有妹妹。", py:"Tā méiyǒu mèimei.", vi:"Anh ấy không có em gái."}
+       ]},
+      {title:"Hỏi số lượng với 幾 + lượng từ", formula:"幾 + 個/隻… + N？",
+       explain:"幾 dùng khi số lượng dự đoán nhỏ (thường < 10). Sau 幾 phải có lượng từ.",
+       examples:[
+         {zh:"你家有幾個人？", py:"Nǐ jiā yǒu jǐ ge rén?", vi:"Nhà bạn có mấy người?"},
+         {zh:"你有幾個哥哥？", py:"Nǐ yǒu jǐ ge gēge?", vi:"Bạn có mấy anh trai?"}
+       ]},
+      {title:"都 — đều", formula:"Chủ ngữ số nhiều + 都 + V",
+       explain:"都 luôn đứng trước động từ/tính từ, sau chủ ngữ số nhiều.",
+       examples:[
+         {zh:"他們都是老師。", py:"Tāmen dōu shì lǎoshī.", vi:"Họ đều là giáo viên."},
+         {zh:"我們都很高興。", py:"Wǒmen dōu hěn gāoxìng.", vi:"Chúng tôi đều rất vui."}
+       ]}
+    ],
+    passage:{
+      title:"Gia đình tôi",
+      sentences:[
+        {zh:"我家有五個人。", py:"Wǒ jiā yǒu wǔ ge rén.", vi:"Nhà tôi có năm người."},
+        {zh:"爸爸、媽媽、哥哥、我和妹妹。", py:"Bàba, māma, gēge, wǒ hé mèimei.", vi:"Bố, mẹ, anh trai, tôi và em gái."},
+        {zh:"爸爸是醫生，媽媽是老師。", py:"Bàba shì yīshēng, māma shì lǎoshī.", vi:"Bố là bác sĩ, mẹ là giáo viên."},
+        {zh:"哥哥和我都是學生。", py:"Gēge hé wǒ dōu shì xuéshēng.", vi:"Anh trai và tôi đều là học sinh."},
+        {zh:"我很愛我的家人。", py:"Wǒ hěn ài wǒ de jiārén.", vi:"Tôi rất yêu gia đình mình."}
+      ]
+    },
+    dialogue:[
+      {role:"A", zh:"你家有幾個人？", py:"Nǐ jiā yǒu jǐ ge rén?", vi:"Nhà bạn có mấy người?"},
+      {role:"B", zh:"我家有四個人。你呢？", py:"Wǒ jiā yǒu sì ge rén. Nǐ ne?", vi:"Nhà tớ có 4 người. Còn cậu?"},
+      {role:"A", zh:"我家有五個人。你有兄弟姐妹嗎？", py:"Wǒ jiā yǒu wǔ ge rén. Nǐ yǒu xiōngdì jiěmèi ma?", vi:"Nhà tớ có 5. Cậu có anh chị em không?"},
+      {role:"B", zh:"我有一個哥哥，沒有姐姐。", py:"Wǒ yǒu yí ge gēge, méiyǒu jiějie.", vi:"Tớ có một anh trai, không có chị gái."}
+    ],
+    matching:[
+      {zh:"爸爸", vi:"bố"},
+      {zh:"媽媽", vi:"mẹ"},
+      {zh:"哥哥", vi:"anh trai"},
+      {zh:"妹妹", vi:"em gái"},
+      {zh:"家", vi:"nhà"},
+      {zh:"有", vi:"có"},
+      {zh:"沒有", vi:"không có"},
+      {zh:"都", vi:"đều"}
+    ],
+    sentenceOrder:[
+      {words:["我家","有","五","個","人","。"], correct:["我家","有","五","個","人","。"], py:"Wǒ jiā yǒu wǔ ge rén.", vi:"Nhà tôi có 5 người."},
+      {words:["你","有","幾","個","哥哥","？"], correct:["你","有","幾","個","哥哥","？"], py:"Nǐ yǒu jǐ ge gēge?", vi:"Bạn có mấy anh trai?"},
+      {words:["我們","都","是","學生","。"], correct:["我們","都","是","學生","。"], py:"Wǒmen dōu shì xuéshēng.", vi:"Chúng tôi đều là học sinh."},
+      {words:["他","沒有","妹妹","。"], correct:["他","沒有","妹妹","。"], py:"Tā méiyǒu mèimei.", vi:"Anh ấy không có em gái."}
+    ]
+  },
+
+  /* ---------------- BÀI 3 ---------------- */
+  {
+    id:3, titleZh:"你的生日是幾月幾號", titleVi:"Sinh nhật bạn là ngày mấy tháng mấy",
+    vocab:[
+      {hanzi:"生日", pinyin:"shēngrì", hv:"Sinh nhật", vi:"sinh nhật", icon:"fa-solid fa-cake-candles",
+       exampleZh:"生日快樂！", examplePy:"Shēngrì kuàilè!", exampleVi:"Chúc mừng sinh nhật!"},
+      {hanzi:"月", pinyin:"yuè", hv:"Nguyệt", vi:"tháng", icon:"fa-solid fa-moon",
+       exampleZh:"五月", examplePy:"wǔ yuè", exampleVi:"tháng 5"},
+      {hanzi:"號", pinyin:"hào", hv:"Hiệu", vi:"ngày, số", icon:"fa-solid fa-calendar-day",
+       exampleZh:"十號", examplePy:"shí hào", exampleVi:"ngày 10"},
+      {hanzi:"星期", pinyin:"xīngqí", hv:"Tinh kỳ", vi:"tuần, thứ", icon:"fa-solid fa-calendar-week",
+       exampleZh:"星期一", examplePy:"xīngqí yī", exampleVi:"thứ hai"},
+      {hanzi:"今天", pinyin:"jīntiān", hv:"Kim thiên", vi:"hôm nay", icon:"fa-solid fa-calendar",
+       exampleZh:"今天很冷。", examplePy:"Jīntiān hěn lěng.", exampleVi:"Hôm nay rất lạnh."},
+      {hanzi:"明天", pinyin:"míngtiān", hv:"Minh thiên", vi:"ngày mai", icon:"fa-solid fa-calendar-plus",
+       exampleZh:"明天見！", examplePy:"Míngtiān jiàn!", exampleVi:"Hẹn gặp ngày mai!"},
+      {hanzi:"昨天", pinyin:"zuótiān", hv:"Tạc thiên", vi:"hôm qua", icon:"fa-solid fa-calendar-minus",
+       exampleZh:"昨天我很忙。", examplePy:"Zuótiān wǒ hěn máng.", exampleVi:"Hôm qua tôi rất bận."},
+      {hanzi:"歲", pinyin:"suì", hv:"Tuế", vi:"tuổi", icon:"fa-solid fa-cake-candles",
+       exampleZh:"我二十歲。", examplePy:"Wǒ èrshí suì.", exampleVi:"Tôi 20 tuổi."},
+      {hanzi:"多大", pinyin:"duō dà", hv:"Đa đại", vi:"bao nhiêu tuổi", icon:"fa-solid fa-question",
+       exampleZh:"你多大？", examplePy:"Nǐ duō dà?", exampleVi:"Bạn bao nhiêu tuổi?"},
+      {hanzi:"快樂", pinyin:"kuàilè", hv:"Khoái lạc", vi:"vui vẻ, hạnh phúc", icon:"fa-solid fa-face-smile",
+       exampleZh:"新年快樂！", examplePy:"Xīnnián kuàilè!", exampleVi:"Chúc mừng năm mới!"}
+    ],
+    grammar:[
+      {title:"Hỏi ngày tháng với 幾月幾號", formula:"… 是 + 幾月幾號？",
+       explain:"Trật tự nói ngày trong tiếng Trung: Tháng → Ngày → Thứ.",
+       examples:[
+         {zh:"今天是幾月幾號？", py:"Jīntiān shì jǐ yuè jǐ hào?", vi:"Hôm nay là ngày mấy tháng mấy?"},
+         {zh:"我的生日是五月十號。", py:"Wǒ de shēngrì shì wǔ yuè shí hào.", vi:"Sinh nhật tôi là ngày 10 tháng 5."}
+       ]},
+      {title:"Hỏi tuổi", formula:"你多大？ / 你幾歲？",
+       explain:"幾歲 hỏi trẻ em (<10 tuổi). 多大 dùng cho người trẻ. 多大年紀 cho người lớn tuổi.",
+       examples:[
+         {zh:"你多大？— 我十八歲。", py:"Nǐ duō dà? — Wǒ shíbā suì.", vi:"Bạn bao nhiêu tuổi? — Tôi 18 tuổi."},
+         {zh:"妹妹幾歲？— 五歲。", py:"Mèimei jǐ suì? — Wǔ suì.", vi:"Em gái mấy tuổi? — 5 tuổi."}
+       ]}
+    ],
+    passage:{
+      title:"Sinh nhật của tôi",
+      sentences:[
+        {zh:"我的生日是五月十號。", py:"Wǒ de shēngrì shì wǔ yuè shí hào.", vi:"Sinh nhật tôi là ngày 10 tháng 5."},
+        {zh:"今年我二十歲。", py:"Jīnnián wǒ èrshí suì.", vi:"Năm nay tôi 20 tuổi."},
+        {zh:"明天是我的生日。", py:"Míngtiān shì wǒ de shēngrì.", vi:"Ngày mai là sinh nhật tôi."},
+        {zh:"我會和家人一起吃蛋糕。", py:"Wǒ huì hé jiārén yìqǐ chī dàngāo.", vi:"Tôi sẽ ăn bánh kem cùng gia đình."}
+      ]
+    },
+    dialogue:[
+      {role:"A", zh:"你的生日是幾月幾號？", py:"Nǐ de shēngrì shì jǐ yuè jǐ hào?", vi:"Sinh nhật bạn là ngày mấy tháng mấy?"},
+      {role:"B", zh:"五月十號。你呢？", py:"Wǔ yuè shí hào. Nǐ ne?", vi:"Ngày 10 tháng 5. Còn bạn?"},
+      {role:"A", zh:"我的生日是十二月一號。你多大？", py:"Wǒ de shēngrì shì shí’èr yuè yī hào. Nǐ duō dà?", vi:"Sinh nhật mình 1/12. Bạn bao nhiêu tuổi?"},
+      {role:"B", zh:"我二十歲。生日快樂！", py:"Wǒ èrshí suì. Shēngrì kuàilè!", vi:"Mình 20 tuổi. Chúc mừng sinh nhật!"}
+    ],
+    matching:[
+      {zh:"生日", vi:"sinh nhật"},
+      {zh:"月", vi:"tháng"},
+      {zh:"號", vi:"ngày"},
+      {zh:"今天", vi:"hôm nay"},
+      {zh:"明天", vi:"ngày mai"},
+      {zh:"昨天", vi:"hôm qua"},
+      {zh:"歲", vi:"tuổi"},
+      {zh:"快樂", vi:"vui vẻ"}
+    ],
+    sentenceOrder:[
+      {words:["我的","生日","是","五月","十號","。"], correct:["我的","生日","是","五月","十號","。"], py:"Wǒ de shēngrì shì wǔ yuè shí hào.", vi:"Sinh nhật tôi là ngày 10 tháng 5."},
+      {words:["今天","是","幾月","幾號","？"], correct:["今天","是","幾月","幾號","？"], py:"Jīntiān shì jǐ yuè jǐ hào?", vi:"Hôm nay là ngày mấy tháng mấy?"},
+      {words:["你","多大","？"], correct:["你","多大","？"], py:"Nǐ duō dà?", vi:"Bạn bao nhiêu tuổi?"},
+      {words:["生日","快樂","！"], correct:["生日","快樂","！"], py:"Shēngrì kuàilè!", vi:"Chúc mừng sinh nhật!"}
+    ]
+  },
+
+  /* ---------------- BÀI 4–16: khung mẫu, hãy bổ sung thêm ---------------- */
+  /* ---------------- BÀI 4 ---------------- */
+  {
+    id:4, titleZh:"你家有幾個人", titleVi:"Nhà bạn có mấy người",
+    vocab:[
+      {hanzi:"一", pinyin:"yī", hv:"Nhất", vi:"một (số 1)", icon:"fa-solid fa-1",
+       exampleZh:"一個學生。", examplePy:"Yí ge xuéshēng.", exampleVi:"Một học sinh."},
+      {hanzi:"兩", pinyin:"liǎng", hv:"Lưỡng", vi:"hai (dùng trước lượng từ)", icon:"fa-solid fa-2",
+       exampleZh:"我有兩個哥哥。", examplePy:"Wǒ yǒu liǎng ge gēge.", exampleVi:"Tôi có hai anh trai."},
+      {hanzi:"十", pinyin:"shí", hv:"Thập", vi:"mười", icon:"fa-solid fa-hashtag",
+       exampleZh:"我十歲。", examplePy:"Wǒ shí suì.", exampleVi:"Tôi 10 tuổi."},
+      {hanzi:"百", pinyin:"bǎi", hv:"Bách", vi:"trăm", icon:"fa-solid fa-hashtag",
+       exampleZh:"一百個人。", examplePy:"Yì bǎi ge rén.", exampleVi:"Một trăm người."},
+      {hanzi:"口", pinyin:"kǒu", hv:"Khẩu", vi:"miệng / lượng từ chỉ người trong gia đình", icon:"fa-solid fa-people-roof",
+       exampleZh:"我家有四口人。", examplePy:"Wǒ jiā yǒu sì kǒu rén.", exampleVi:"Nhà tôi có 4 người."},
+      {hanzi:"隻", pinyin:"zhī", hv:"Chích", vi:"con (lượng từ cho động vật)", icon:"fa-solid fa-dog",
+       exampleZh:"一隻貓。", examplePy:"Yì zhī māo.", exampleVi:"Một con mèo."},
+      {hanzi:"本", pinyin:"běn", hv:"Bản", vi:"quyển (lượng từ cho sách)", icon:"fa-solid fa-book",
+       exampleZh:"兩本書。", examplePy:"Liǎng běn shū.", exampleVi:"Hai quyển sách."},
+      {hanzi:"男", pinyin:"nán", hv:"Nam", vi:"nam, con trai", icon:"fa-solid fa-person",
+       exampleZh:"他是男生。", examplePy:"Tā shì nánshēng.", exampleVi:"Anh ấy là nam sinh."},
+      {hanzi:"女", pinyin:"nǚ", hv:"Nữ", vi:"nữ, con gái", icon:"fa-solid fa-person-dress",
+       exampleZh:"她是女生。", examplePy:"Tā shì nǚshēng.", exampleVi:"Cô ấy là nữ sinh."},
+      {hanzi:"小孩", pinyin:"xiǎohái", hv:"Tiểu hài", vi:"đứa trẻ, em bé", icon:"fa-solid fa-child",
+       exampleZh:"那個小孩很可愛。", examplePy:"Nà ge xiǎohái hěn kě'ài.", exampleVi:"Đứa bé đó rất dễ thương."},
+      {hanzi:"朋友", pinyin:"péngyǒu", hv:"Bằng hữu", vi:"bạn bè", icon:"fa-solid fa-user-group",
+       exampleZh:"他是我的朋友。", examplePy:"Tā shì wǒ de péngyǒu.", exampleVi:"Anh ấy là bạn của tôi."},
+      {hanzi:"狗", pinyin:"gǒu", hv:"Cẩu", vi:"chó", icon:"fa-solid fa-dog",
+       exampleZh:"我家有一隻狗。", examplePy:"Wǒ jiā yǒu yì zhī gǒu.", exampleVi:"Nhà tôi có một con chó."}
+    ],
+    grammar:[
+      {title:"Lượng từ 口 — chỉ người trong gia đình", formula:"… 家 有 + Số + 口 人",
+       explain:"Khi đếm số người trong gia đình, có thể dùng 口 thay cho 個. 口 mang sắc thái gia đình, trang trọng hơn.",
+       examples:[
+         {zh:"我家有四口人。", py:"Wǒ jiā yǒu sì kǒu rén.", vi:"Nhà tôi có 4 người."},
+         {zh:"你家有幾口人？", py:"Nǐ jiā yǒu jǐ kǒu rén?", vi:"Nhà bạn có mấy người?"},
+         {zh:"他家有六口人。", py:"Tā jiā yǒu liù kǒu rén.", vi:"Nhà anh ấy có 6 người."}
+       ]},
+      {title:"兩 vs 二 — phân biệt cách dùng", formula:"兩 + Lượng từ + N  /  二 (đếm thuần, số phức)",
+       explain:"兩 dùng trước lượng từ (兩個人, 兩本書). 二 dùng khi đọc số đếm (一、二、三) hoặc trong số phức (十二, 二十).",
+       examples:[
+         {zh:"兩個哥哥", py:"liǎng ge gēge", vi:"hai anh trai"},
+         {zh:"二十歲", py:"èrshí suì", vi:"20 tuổi"},
+         {zh:"兩隻貓", py:"liǎng zhī māo", vi:"hai con mèo"}
+       ]},
+      {title:"Lượng từ phổ biến: 個 / 隻 / 本", formula:"Số + Lượng từ + Danh từ",
+       explain:"個 (chung), 隻 (động vật nhỏ), 本 (sách vở). Bắt buộc có lượng từ giữa số và danh từ.",
+       examples:[
+         {zh:"三個學生", py:"sān ge xuéshēng", vi:"ba học sinh"},
+         {zh:"五隻狗", py:"wǔ zhī gǒu", vi:"năm con chó"},
+         {zh:"兩本書", py:"liǎng běn shū", vi:"hai quyển sách"}
+       ]}
+    ],
+    passage:{
+      title:"Nhà của tôi",
+      sentences:[
+        {zh:"我家有五口人。", py:"Wǒ jiā yǒu wǔ kǒu rén.", vi:"Nhà tôi có 5 người."},
+        {zh:"爸爸、媽媽、一個哥哥、一個妹妹和我。", py:"Bàba, māma, yí ge gēge, yí ge mèimei hé wǒ.", vi:"Bố, mẹ, một anh trai, một em gái và tôi."},
+        {zh:"我家也有兩隻狗和一隻貓。", py:"Wǒ jiā yě yǒu liǎng zhī gǒu hé yì zhī māo.", vi:"Nhà tôi còn có 2 con chó và 1 con mèo."},
+        {zh:"我有很多朋友，他們都是學生。", py:"Wǒ yǒu hěn duō péngyǒu, tāmen dōu shì xuéshēng.", vi:"Tôi có rất nhiều bạn, họ đều là học sinh."},
+        {zh:"我覺得我的家很熱鬧。", py:"Wǒ juéde wǒ de jiā hěn rènào.", vi:"Tôi thấy nhà mình rất náo nhiệt."}
+      ]
+    },
+    dialogue:[
+      {role:"A", zh:"你家有幾口人？", py:"Nǐ jiā yǒu jǐ kǒu rén?", vi:"Nhà bạn có mấy người?"},
+      {role:"B", zh:"我家有五口人。你呢？", py:"Wǒ jiā yǒu wǔ kǒu rén. Nǐ ne?", vi:"Nhà tôi có 5 người. Còn bạn?"},
+      {role:"A", zh:"我家有四口人。你家有寵物嗎？", py:"Wǒ jiā yǒu sì kǒu rén. Nǐ jiā yǒu chǒngwù ma?", vi:"Nhà tôi có 4 người. Nhà bạn có thú cưng không?"},
+      {role:"B", zh:"有，我家有兩隻狗。", py:"Yǒu, wǒ jiā yǒu liǎng zhī gǒu.", vi:"Có, nhà tôi có 2 con chó."},
+      {role:"A", zh:"真好！我也喜歡狗。", py:"Zhēn hǎo! Wǒ yě xǐhuān gǒu.", vi:"Thật tuyệt! Tôi cũng thích chó."}
+    ],
+    matching:[
+      {zh:"口", vi:"lượng từ chỉ người"},
+      {zh:"隻", vi:"con (động vật)"},
+      {zh:"本", vi:"quyển"},
+      {zh:"兩", vi:"hai (trước lượng từ)"},
+      {zh:"百", vi:"trăm"},
+      {zh:"朋友", vi:"bạn bè"},
+      {zh:"小孩", vi:"đứa trẻ"},
+      {zh:"狗", vi:"chó"}
+    ],
+    sentenceOrder:[
+      {words:["我家","有","五","口","人","。"], correct:["我家","有","五","口","人","。"], py:"Wǒ jiā yǒu wǔ kǒu rén.", vi:"Nhà tôi có 5 người."},
+      {words:["他","有","兩","隻","貓","。"], correct:["他","有","兩","隻","貓","。"], py:"Tā yǒu liǎng zhī māo.", vi:"Anh ấy có 2 con mèo."},
+      {words:["你家","有","幾","口","人","？"], correct:["你家","有","幾","口","人","？"], py:"Nǐ jiā yǒu jǐ kǒu rén?", vi:"Nhà bạn có mấy người?"},
+      {words:["我","有","很多","朋友","。"], correct:["我","有","很多","朋友","。"], py:"Wǒ yǒu hěn duō péngyǒu.", vi:"Tôi có rất nhiều bạn."},
+      {words:["她","有","三","本","書","。"], correct:["她","有","三","本","書","。"], py:"Tā yǒu sān běn shū.", vi:"Cô ấy có 3 quyển sách."}
+    ]
+  },
+  makeStub(5,  "這是我的家人",          "Đây là gia đình tôi", "fa-solid fa-people-group"),
+  makeStub(6,  "我喜歡這個顏色",        "Tôi thích màu này", "fa-solid fa-palette"),
+  makeStub(7,  "我想喝咖啡",            "Tôi muốn uống cà phê", "fa-solid fa-mug-hot"),
+  makeStub(8,  "早上九點去KTV",         "9 giờ sáng đi KTV", "fa-solid fa-microphone"),
+  makeStub(9,  "怎麼去",                "Đi như thế nào", "fa-solid fa-route"),
+  makeStub(10, "多少錢",                "Bao nhiêu tiền", "fa-solid fa-money-bill"),
+  makeStub(11, "臺灣的水果很好吃",      "Hoa quả Đài Loan rất ngon", "fa-solid fa-apple-whole"),
+  makeStub(12, "我想租房子",            "Tôi muốn thuê nhà", "fa-solid fa-house-chimney"),
+  makeStub(13, "你在臺灣學了多久的中文","Bạn học tiếng Trung ở Đài Loan bao lâu", "fa-solid fa-clock"),
+  makeStub(14, "生日快樂",              "Chúc mừng sinh nhật", "fa-solid fa-cake-candles"),
+  makeStub(15, "天氣這麼冷",            "Thời tiết lạnh quá", "fa-solid fa-snowflake"),
+  makeStub(16, "我覺得不舒服",          "Tôi cảm thấy không khỏe", "fa-solid fa-bed-pulse")
+];
+
+/* Sinh khung dữ liệu cho bài chưa có nội dung đầy đủ */
+function makeStub(id, titleZh, titleVi, icon){
+  return {
+    id, titleZh, titleVi,
+    vocab:[
+      {hanzi:titleZh.slice(0,1), pinyin:"(pinyin)", hv:"(Hán Việt)", vi:"(nghĩa)", icon,
+       exampleZh:"(ví dụ)", examplePy:"(pinyin ví dụ)", exampleVi:"(dịch ví dụ)"},
+      {hanzi:titleZh.slice(1,2)||"好", pinyin:"hǎo", hv:"Hảo", vi:"tốt, khỏe", icon:"fa-solid fa-thumbs-up",
+       exampleZh:"很好。", examplePy:"Hěn hǎo.", exampleVi:"Rất tốt."},
+      {hanzi:"我", pinyin:"wǒ", hv:"Ngã", vi:"tôi", icon:"fa-solid fa-user",
+       exampleZh:"我來了。", examplePy:"Wǒ lái le.", exampleVi:"Tôi đến rồi."}
+    ],
+    grammar:[
+      {title:"(Điểm ngữ pháp 1)", formula:"S + V + O",
+       explain:"Hãy bổ sung nội dung ngữ pháp tại đây.",
+       examples:[{zh:"我學中文。", py:"Wǒ xué Zhōngwén.", vi:"Tôi học tiếng Trung."}]}
+    ],
+    passage:{
+      title:"(Đoạn văn mẫu – hãy bổ sung)",
+      sentences:[
+        {zh:"今天是好日子。", py:"Jīntiān shì hǎo rìzi.", vi:"Hôm nay là ngày tốt."},
+        {zh:"我和朋友一起學中文。", py:"Wǒ hé péngyǒu yìqǐ xué Zhōngwén.", vi:"Tôi cùng bạn học tiếng Trung."}
+      ]
+    },
+    dialogue:[
+      {role:"A", zh:"你好嗎？", py:"Nǐ hǎo ma?", vi:"Bạn khỏe không?"},
+      {role:"B", zh:"我很好，謝謝！", py:"Wǒ hěn hǎo, xièxie!", vi:"Tôi khỏe, cảm ơn!"}
+    ],
+    matching:[
+      {zh:"我", vi:"tôi"},
+      {zh:"你", vi:"bạn"},
+      {zh:"好", vi:"tốt"},
+      {zh:"謝謝", vi:"cảm ơn"}
+    ],
+    sentenceOrder:[
+      {words:["我","學","中文","。"], correct:["我","學","中文","。"], py:"Wǒ xué Zhōngwén.", vi:"Tôi học tiếng Trung."},
+      {words:["你","好","嗎","？"], correct:["你","好","嗎","？"], py:"Nǐ hǎo ma?", vi:"Bạn khỏe không?"}
+    ]
+  };
+}
+
+/* ============================================================
+   STATE & RENDER
+   ============================================================ */
+let currentLessonId = 1;
+let currentTab = "vocab";
+
+const lessonGrid = document.getElementById("lessonGrid");
+const lessonHeader = document.getElementById("lessonHeader");
+const tabContent = document.getElementById("tabContent");
+
+function renderLessonGrid(){
+  lessonGrid.innerHTML = "";
+  LESSONS.forEach(l=>{
+    const btn = document.createElement("button");
+    btn.className = "lesson-btn border rounded-xl py-2 px-2 text-sm hover:bg-indigo-50 transition";
+    if(l.id===currentLessonId) btn.classList.add("active");
+    btn.innerHTML = `<div class="font-bold">Bài ${l.id}</div>
+                     <div class="hanzi text-xs opacity-80">${l.titleZh}</div>`;
+    btn.onclick = ()=>{ currentLessonId=l.id; renderLessonGrid(); renderHeader(); renderTab(); };
+    lessonGrid.appendChild(btn);
+  });
+}
+
+function renderHeader(){
+  const l = LESSONS.find(x=>x.id===currentLessonId);
+  lessonHeader.innerHTML = `
+    <div class="flex items-center justify-between flex-wrap gap-2">
+      <div>
+        <div class="text-xs uppercase tracking-widest text-indigo-500 font-semibold">Bài ${l.id}</div>
+        <div class="text-2xl font-bold hanzi text-gray-800">${l.titleZh}</div>
+        <div class="text-gray-600 italic">${l.titleVi}</div>
+      </div>
+      <div class="text-sm text-gray-500">
+        <i class="fa-solid fa-layer-group mr-1"></i>${l.vocab.length} từ ·
+        <i class="fa-solid fa-pen-ruler mr-1"></i>${l.grammar.length} ngữ pháp
+      </div>
+    </div>`;
+}
+
+function setActiveTab(){
+  document.querySelectorAll(".tab-btn").forEach(b=>{
+    if(b.dataset.tab===currentTab){
+      b.classList.add("bg-white","text-indigo-600","border-b-2","border-indigo-600");
+    }else{
+      b.classList.remove("bg-white","text-indigo-600","border-b-2","border-indigo-600");
+    }
+  });
+}
+
+document.querySelectorAll(".tab-btn").forEach(b=>{
+  b.onclick = ()=>{ currentTab=b.dataset.tab; renderTab(); };
+});
+
+function renderTab(){
+  setActiveTab();
+  const l = LESSONS.find(x=>x.id===currentLessonId);
+  if(currentTab==="vocab") renderVocab(l);
+  else if(currentTab==="grammar") renderGrammar(l);
+  else if(currentTab==="passage") renderPassage(l);
+  else if(currentTab==="match") renderMatch(l);
+  else if(currentTab==="order") renderOrder(l);
+}
+
+/* ---------- TTS ---------- */
+function speak(text, lang="zh-TW"){
+  if(!("speechSynthesis" in window)) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang; u.rate = 0.9;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+}
+
+/* ---------- 1. VOCAB FLASHCARDS ---------- */
+let vocabIdx = 0;
+function renderVocab(l){
+  vocabIdx = 0;
+  tabContent.innerHTML = `
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div class="text-gray-600"><i class="fa-solid fa-layer-group mr-1 text-indigo-500"></i>
+        Thẻ <span id="vIdx">1</span> / ${l.vocab.length}
+      </div>
+      <div class="flex gap-2">
+        <button id="vPrev" class="px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200"><i class="fa-solid fa-chevron-left"></i></button>
+        <button id="vFlip" class="px-3 py-1 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600"><i class="fa-solid fa-rotate"></i> Lật</button>
+        <button id="vNext" class="px-3 py-1 rounded-lg bg-gray-100 hover:bg-gray-200"><i class="fa-solid fa-chevron-right"></i></button>
+        <button id="vShuf" class="px-3 py-1 rounded-lg bg-pink-500 text-white hover:bg-pink-600"><i class="fa-solid fa-shuffle"></i></button>
+      </div>
+    </div>
+    <div id="vCardWrap" class="flex justify-center"></div>
+    <div class="mt-6">
+      <h3 class="font-semibold text-gray-600 mb-2">Toàn bộ từ vựng:</h3>
+      <div id="vAll" class="grid sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+    </div>`;
+  const drawCard=()=>{
+    const v = l.vocab[vocabIdx];
+    document.getElementById("vIdx").textContent = vocabIdx+1;
+    document.getElementById("vCardWrap").innerHTML = `
+      <div id="vCard" class="flip-card w-full max-w-md h-72 cursor-pointer" onclick="this.classList.toggle('flipped')">
+        <div class="flip-card-inner">
+          <div class="flip-face bg-gradient-to-br from-indigo-100 to-pink-100 shadow-lg">
+            <i class="${v.icon} text-6xl text-indigo-500 mb-3"></i>
+            <div class="hanzi text-6xl font-bold text-gray-800">${v.hanzi}</div>
+            <div class="text-gray-500 mt-2 text-sm">Nhấn để xem nghĩa</div>
+            <button onclick="event.stopPropagation();speak('${v.hanzi}')" class="mt-3 text-indigo-600"><i class="fa-solid fa-volume-high"></i> Nghe</button>
+          </div>
+          <div class="flip-face flip-back bg-white shadow-lg border">
+            <div class="text-xl text-indigo-600 font-mono">${v.pinyin}</div>
+            <div class="text-sm text-gray-500 italic">Hán Việt: ${v.hv}</div>
+            <div class="text-2xl font-bold text-gray-800 mt-1">${v.vi}</div>
+            <div class="mt-3 text-center text-gray-700 border-t pt-2">
+              <div class="hanzi text-lg">${v.exampleZh}</div>
+              <div class="text-sm font-mono text-indigo-500">${v.examplePy}</div>
+              <div class="text-sm italic">${v.exampleVi}</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  };
+  drawCard();
+  document.getElementById("vPrev").onclick=()=>{vocabIdx=(vocabIdx-1+l.vocab.length)%l.vocab.length;drawCard();};
+  document.getElementById("vNext").onclick=()=>{vocabIdx=(vocabIdx+1)%l.vocab.length;drawCard();};
+  document.getElementById("vFlip").onclick=()=>document.getElementById("vCard").classList.toggle("flipped");
+  document.getElementById("vShuf").onclick=()=>{l.vocab.sort(()=>Math.random()-.5);vocabIdx=0;drawCard();renderVocabAll(l);};
+
+  renderVocabAll(l);
+}
+function renderVocabAll(l){
+  const wrap = document.getElementById("vAll");
+  wrap.innerHTML = l.vocab.map(v=>`
+    <div class="border rounded-xl p-3 flex gap-3 items-center bg-white hover:shadow">
+      <i class="${v.icon} text-2xl text-indigo-500 w-8 text-center"></i>
+      <div class="flex-1">
+        <div class="hanzi text-xl font-bold">${v.hanzi}
+          <span class="font-mono text-sm text-indigo-500">${v.pinyin}</span>
+        </div>
+        <div class="text-sm text-gray-600">${v.vi} <span class="italic text-gray-400">· ${v.hv}</span></div>
+      </div>
+      <button onclick="speak('${v.hanzi}')" class="text-indigo-500 hover:text-indigo-700"><i class="fa-solid fa-volume-high"></i></button>
+    </div>`).join("");
+}
+
+/* ---------- 2. GRAMMAR ---------- */
+function renderGrammar(l){
+  tabContent.innerHTML = l.grammar.map((g,i)=>`
+    <div class="mb-5 border rounded-xl p-4 bg-white shadow-sm">
+      <h3 class="text-lg font-bold text-indigo-600"><i class="fa-solid fa-pen-ruler mr-2"></i>${i+1}. ${g.title}</h3>
+      <div class="mt-2 inline-block bg-indigo-50 text-indigo-700 font-mono px-3 py-1 rounded">${g.formula}</div>
+      <p class="mt-2 text-gray-700">${g.explain}</p>
+      <div class="mt-3 space-y-2">
+        ${g.examples.map(e=>`
+          <div class="border-l-4 border-pink-400 pl-3">
+            <div class="hanzi text-lg">${e.zh} <button onclick="speak('${e.zh}')" class="text-indigo-500 ml-1"><i class="fa-solid fa-volume-high"></i></button></div>
+            <div class="font-mono text-sm text-indigo-500">${e.py}</div>
+            <div class="text-sm italic text-gray-600">${e.vi}</div>
+          </div>`).join("")}
+      </div>
+    </div>`).join("");
+}
+
+/* ---------- 3. PASSAGE & DIALOGUE ---------- */
+function renderPassage(l){
+  tabContent.innerHTML = `
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="border rounded-xl p-4 bg-white">
+        <h3 class="font-bold text-indigo-600 mb-3"><i class="fa-solid fa-scroll mr-2"></i>${l.passage.title}</h3>
+        ${l.passage.sentences.map(s=>`
+          <div class="mb-2">
+            <div class="hanzi text-lg">${s.zh}
+              <button onclick="speak('${s.zh}')" class="text-indigo-500 ml-1"><i class="fa-solid fa-volume-high"></i></button>
+            </div>
+            <div class="font-mono text-sm text-indigo-500">${s.py}</div>
+            <div class="text-sm italic text-gray-600">${s.vi}</div>
+          </div>`).join("")}
+        <button onclick="speak('${l.passage.sentences.map(s=>s.zh).join(' ')}')" class="mt-2 px-3 py-1 bg-indigo-500 text-white rounded-lg"><i class="fa-solid fa-play"></i> Đọc cả đoạn</button>
+      </div>
+      <div class="border rounded-xl p-4 bg-white">
+        <h3 class="font-bold text-pink-600 mb-3"><i class="fa-solid fa-comments mr-2"></i>Đoạn đối thoại</h3>
+        ${l.dialogue.map(d=>`
+          <div class="mb-3 flex gap-2">
+            <div class="w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold ${d.role==='A'?'bg-indigo-500':'bg-pink-500'}">${d.role}</div>
+            <div class="flex-1">
+              <div class="hanzi">${d.zh} <button onclick="speak('${d.zh}')" class="text-indigo-500"><i class="fa-solid fa-volume-high"></i></button></div>
+              <div class="font-mono text-sm text-indigo-500">${d.py}</div>
+              <div class="text-sm italic text-gray-600">${d.vi}</div>
+            </div>
+          </div>`).join("")}
+      </div>
+    </div>`;
+}
+
+/* ---------- 4. MATCHING ---------- */
+let matchState = null;
+function renderMatch(l){
+  const pairs = l.matching.map((p,i)=>({...p, id:i}));
+  const left = [...pairs].sort(()=>Math.random()-.5);
+  const right = [...pairs].sort(()=>Math.random()-.5);
+  matchState = {selL:null, selR:null, done:0, total:pairs.length};
+  tabContent.innerHTML = `
+    <div class="flex justify-between items-center mb-3">
+      <div class="text-gray-600">Nhấn 1 từ Hán + 1 nghĩa để nối. <span class="font-bold">Đúng <span id="mScore">0</span>/${pairs.length}</span></div>
+      <button onclick="renderMatch(LESSONS.find(x=>x.id===currentLessonId))" class="px-3 py-1 rounded-lg bg-pink-500 text-white"><i class="fa-solid fa-rotate"></i> Chơi lại</button>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div id="matchL" class="space-y-2"></div>
+      <div id="matchR" class="space-y-2"></div>
+    </div>`;
+  const renderCol=(side, arr)=>{
+    const el = document.getElementById(side==="L"?"matchL":"matchR");
+    el.innerHTML = arr.map(p=>`
+      <button data-id="${p.id}" class="match-btn w-full text-left border rounded-lg px-3 py-2 bg-white hover:bg-indigo-50 hanzi">
+        ${side==="L"?p.zh:p.vi}
+      </button>`).join("");
+    el.querySelectorAll(".match-btn").forEach(b=>{
+      b.onclick = ()=>handleMatchClick(side, parseInt(b.dataset.id), b);
+    });
+  };
+  renderCol("L", left);
+  renderCol("R", right);
+}
+function handleMatchClick(side, id, btn){
+  if(btn.classList.contains("correct")) return;
+  if(side==="L"){
+    if(matchState.selL) matchState.selL.classList.remove("selected");
+    matchState.selL = btn; btn.classList.add("selected");
+  }else{
+    if(matchState.selR) matchState.selR.classList.remove("selected");
+    matchState.selR = btn; btn.classList.add("selected");
+  }
+  if(matchState.selL && matchState.selR){
+    const lId = parseInt(matchState.selL.dataset.id);
+    const rId = parseInt(matchState.selR.dataset.id);
+    if(lId===rId){
+      matchState.selL.classList.remove("selected"); matchState.selR.classList.remove("selected");
+      matchState.selL.classList.add("correct"); matchState.selR.classList.add("correct");
+      matchState.done++;
+      document.getElementById("mScore").textContent = matchState.done;
+      matchState.selL = null; matchState.selR = null;
+      if(matchState.done===matchState.total){
+        setTimeout(()=>alert("🎉 Hoàn thành! Bạn đã nối đúng tất cả các từ."),200);
+      }
+    }else{
+      const a=matchState.selL, b=matchState.selR;
+      a.classList.add("wrong"); b.classList.add("wrong");
+      setTimeout(()=>{
+        a.classList.remove("wrong","selected"); b.classList.remove("wrong","selected");
+      },500);
+      matchState.selL = null; matchState.selR = null;
+    }
+  }
+}
+
+/* ---------- 5. SENTENCE ORDER ---------- */
+let orderIdx = 0;
+let orderPicked = [];
+function renderOrder(l){
+  orderIdx = 0; orderPicked = [];
+  drawOrder(l);
+}
+function drawOrder(l){
+  const item = l.sentenceOrder[orderIdx];
+  const shuffled = [...item.words].sort(()=>Math.random()-.5);
+  orderPicked = [];
+  tabContent.innerHTML = `
+    <div class="mb-3 flex justify-between items-center flex-wrap gap-2">
+      <div class="text-gray-600">Câu <span class="font-bold">${orderIdx+1}/${l.sentenceOrder.length}</span></div>
+      <div class="text-gray-700 italic">Nghĩa: <span class="font-semibold">${item.vi}</span></div>
+    </div>
+    <div id="oPicked" class="min-h-[60px] border-2 border-dashed rounded-xl p-3 bg-indigo-50 flex flex-wrap gap-2 mb-3"></div>
+    <div id="oPool" class="flex flex-wrap gap-2 mb-4"></div>
+    <div id="oResult" class="mb-4"></div>
+    <div class="flex gap-2 flex-wrap">
+      <button id="oCheck" class="px-4 py-2 bg-indigo-500 text-white rounded-lg"><i class="fa-solid fa-check"></i> Kiểm tra</button>
+      <button id="oReset" class="px-4 py-2 bg-gray-200 rounded-lg"><i class="fa-solid fa-rotate"></i> Làm lại</button>
+      <button id="oNext"  class="px-4 py-2 bg-pink-500 text-white rounded-lg"><i class="fa-solid fa-forward"></i> Câu tiếp theo</button>
+    </div>`;
+  const pool = document.getElementById("oPool");
+  const picked = document.getElementById("oPicked");
+  const drawPool=()=>{
+    pool.innerHTML = shuffled.map((w,i)=>w===null?"":`
+      <button data-i="${i}" class="chip hanzi bg-white border-2 border-indigo-300 rounded-lg px-3 py-2 text-lg shadow-sm">${w}</button>`).join("");
+    pool.querySelectorAll(".chip").forEach(b=>{
+      b.onclick=()=>{
+        const i=parseInt(b.dataset.i);
+        orderPicked.push({w:shuffled[i], i});
+        shuffled[i]=null;
+        drawPicked(); drawPool();
+      };
+    });
+  };
+  const drawPicked=()=>{
+    picked.innerHTML = orderPicked.map((p,k)=>`
+      <button data-k="${k}" class="chip hanzi bg-indigo-500 text-white rounded-lg px-3 py-2 text-lg">${p.w}</button>`).join("")
+      || `<span class="text-gray-400 italic">Bấm vào các từ bên dưới để sắp xếp...</span>`;
+    picked.querySelectorAll(".chip").forEach(b=>{
+      b.onclick=()=>{
+        const k=parseInt(b.dataset.k);
+        const removed = orderPicked.splice(k,1)[0];
+        shuffled[removed.i]=removed.w;
+        drawPicked(); drawPool();
+      };
+    });
+  };
+  drawPool(); drawPicked();
+
+  document.getElementById("oCheck").onclick=()=>{
+    const arr = orderPicked.map(p=>p.w);
+    const ok = JSON.stringify(arr)===JSON.stringify(item.correct);
+    document.getElementById("oResult").innerHTML = ok
+      ? `<div class="p-3 bg-green-100 text-green-800 rounded-lg">
+           ✅ Chính xác! <span class="hanzi">${item.correct.join("")}</span>
+           <div class="font-mono text-sm">${item.py}</div></div>`
+      : `<div class="p-3 bg-red-100 text-red-800 rounded-lg">❌ Chưa đúng. Hãy thử lại!</div>`;
+    if(ok) speak(item.correct.join(""));
+  };
+  document.getElementById("oReset").onclick=()=>drawOrder(l);
+  document.getElementById("oNext").onclick=()=>{
+    orderIdx=(orderIdx+1)%l.sentenceOrder.length;
+    drawOrder(l);
+  };
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderLessonGrid();
+renderHeader();
+renderTab();
+</script>
+</body>
+</html>

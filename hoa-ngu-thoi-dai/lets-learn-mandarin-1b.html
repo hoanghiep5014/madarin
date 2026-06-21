@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>學華語向前走 1B — Let's Learn Mandarin For Children 1B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+<style>
+:root{--red:#43A047;--gold:#FFB300;--bg:#F1F8E9;--paper:#ffffff;
+  --text:#2d2d2d;--muted:#7a7a7a;--green:#66BB6A;--soft-red:#FFF9C4;}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);
+  font-family:'Noto Sans',-apple-system,BlinkMacSystemFont,sans-serif;}
+.cn{font-family:'Noto Sans TC','Noto Sans',sans-serif;}
+.header{background:linear-gradient(135deg,#66BB6A 0%,#FFD54F 100%);
+  color:#fff;padding:34px 20px 28px;text-align:center;
+  border-radius:0 0 28px 28px;box-shadow:0 6px 18px rgba(76,175,80,.18);position:relative;}
+.header h1{margin:0;font-family:'Noto Sans TC';font-size:2.5em;font-weight:700;letter-spacing:2px;}
+.header .sub{margin-top:6px;opacity:.92;font-size:1.05em;}
+.header .vn{margin-top:10px;font-size:.95em;opacity:.85;}
+.header .stop-tts{position:absolute;top:18px;right:18px;background:rgba(255,255,255,0.2);color:#fff;border:none;padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:.85em;backdrop-filter:blur(6px);}
+.header .stop-tts:hover{background:rgba(255,255,255,0.35);}
+.container{max-width:1200px;margin:0 auto;padding:24px 18px 60px;}
+.home-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+@media (max-width:900px){.home-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:520px){.home-grid{grid-template-columns:1fr;}}
+.lesson-card{background:var(--paper);border-radius:18px;padding:22px 16px 18px;
+  text-align:center;box-shadow:0 4px 14px rgba(76,175,80,.08);
+  cursor:pointer;transition:all .25s;border:2px solid transparent;}
+.lesson-card:hover{transform:translateY(-5px);box-shadow:0 10px 24px rgba(76,175,80,.22);border-color:var(--gold);}
+.lesson-card .num{display:inline-block;background:var(--gold);color:#fff;padding:3px 12px;border-radius:14px;font-size:.78em;font-weight:600;margin-bottom:8px;}
+.lesson-card .icon{font-size:2.6em;color:var(--red);margin:8px 0 12px;}
+.lesson-card .cn-title{font-family:'Noto Sans TC';font-size:1.25em;font-weight:600;margin:2px 0;color:#222;}
+.lesson-card .vi-title{color:var(--muted);font-size:.85em;margin-top:6px;}
+#lesson{display:none;}
+.lesson-header{background:var(--paper);border-radius:16px;padding:16px 20px;margin-bottom:16px;
+  display:flex;align-items:center;gap:16px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.back-btn{background:var(--soft-red);color:var(--red);border:none;padding:10px 16px;border-radius:12px;cursor:pointer;font-weight:700;font-size:.95em;}
+.back-btn:hover{background:var(--red);color:#fff;}
+.lesson-title h2{margin:0;font-family:'Noto Sans TC';color:var(--red);font-size:1.5em;}
+.lesson-title p{margin:4px 0 0;color:var(--muted);font-size:.95em;}
+.tab-bar{display:flex;gap:6px;background:var(--paper);padding:8px;border-radius:14px;margin-bottom:20px;overflow-x:auto;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.tab-btn{flex:1;min-width:110px;padding:11px 12px;border:none;background:transparent;cursor:pointer;font-weight:600;color:var(--muted);border-radius:10px;transition:all .2s;white-space:nowrap;font-size:.95em;}
+.tab-btn.active{background:linear-gradient(135deg,var(--red),var(--gold));color:#fff;box-shadow:0 4px 10px rgba(76,175,80,.25);}
+.tab-btn:hover:not(.active){background:var(--soft-red);color:var(--red);}
+.tab-btn i{margin-right:6px;}
+
+.spk{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--soft-red);color:var(--red);border:none;cursor:pointer;margin-left:6px;font-size:.82em;transition:all .15s;vertical-align:middle;padding:0;}
+.spk:hover{background:var(--red);color:#fff;transform:scale(1.12);}
+.spk:active{transform:scale(.95);}
+.spk.big{width:34px;height:34px;font-size:1em;}
+
+/* Vocab */
+.vocab-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+@media (max-width:900px){.vocab-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:500px){.vocab-grid{grid-template-columns:1fr;}}
+.flashcard{perspective:1200px;height:320px;cursor:pointer;}
+.flashcard-inner{position:relative;width:100%;height:100%;transition:transform .7s;transform-style:preserve-3d;}
+.flashcard.flipped .flashcard-inner{transform:rotateY(180deg);}
+.flashcard-front,.flashcard-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:18px;padding:18px;box-shadow:0 6px 16px rgba(0,0,0,.1);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.flashcard-front{background:linear-gradient(135deg,#fff,#E8F5E9);border:2px solid var(--gold);}
+.flashcard-front .fa-ic{font-size:3em;color:var(--red);margin-bottom:10px;}
+.flashcard-front .hanzi-wrap{display:flex;align-items:center;gap:6px;}
+.flashcard-front .hanzi{font-family:'Noto Sans TC';font-size:2.4em;color:var(--red);font-weight:700;line-height:1.1;}
+.flashcard-front .pinyin{color:var(--muted);font-size:1.05em;margin-top:8px;}
+.flashcard-front .hint{position:absolute;bottom:10px;right:14px;font-size:.72em;color:#bbb;}
+.flashcard-back{background:linear-gradient(135deg,#fff,#FFF9C4);transform:rotateY(180deg);text-align:left;align-items:stretch;justify-content:flex-start;overflow:auto;}
+.flashcard-back .vi{color:var(--red);font-weight:700;font-size:1.15em;margin:0;}
+.flashcard-back .hv{color:#b8860b;font-style:italic;font-size:.88em;margin:4px 0 12px;}
+.flashcard-back .ex{border-top:1px dashed #ddd;padding-top:8px;margin-top:auto;font-size:.85em;}
+.flashcard-back .ex .ecn{font-family:'Noto Sans TC';font-size:1.02em;color:#333;}
+.flashcard-back .ex .epy{color:var(--muted);font-style:italic;margin:2px 0;font-size:.82em;}
+.flashcard-back .ex .evt{color:#555;}
+
+/* Grammar */
+.grammar-card{background:var(--paper);border-radius:14px;padding:18px 22px;margin-bottom:14px;border-left:5px solid var(--gold);box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.grammar-card h3{margin:0 0 10px;color:var(--red);font-family:'Noto Sans TC';font-size:1.2em;}
+.formula{background:var(--soft-red);color:var(--red);padding:8px 16px;border-radius:10px;display:inline-block;font-family:'Noto Sans TC',monospace;font-weight:600;margin-bottom:14px;font-size:1.05em;}
+.gex{padding:10px 14px;border-radius:10px;background:#faf6ec;margin-top:10px;}
+.gex .ecn{font-family:'Noto Sans TC';font-size:1.1em;color:#222;}
+.gex .epy{color:var(--muted);font-style:italic;font-size:.9em;margin:3px 0;}
+.gex .evt{color:#555;font-size:.95em;}
+
+/* Passage */
+.passage-card{background:var(--paper);border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.passage-card h3{color:var(--red);margin:0 0 14px;font-family:'Noto Sans TC';display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.passage-card .pcn{font-family:'Noto Sans TC';font-size:1.32em;line-height:1.9;color:#222;}
+.passage-card .ppy{color:var(--muted);margin-top:14px;font-style:italic;line-height:1.7;font-size:.95em;}
+.passage-card .pvt{margin-top:14px;padding:14px;background:var(--soft-red);border-radius:10px;color:#5a1a24;line-height:1.7;display:none;}
+.passage-card .pvt.show{display:block;}
+.toggle-btn{background:var(--gold);color:#fff;border:none;padding:9px 16px;border-radius:10px;cursor:pointer;margin-top:14px;font-weight:600;}
+.toggle-btn:hover{background:var(--red);}
+.dialogue-line{padding:10px 14px;margin:8px 0;border-radius:10px;}
+.dialogue-line.A{background:#FFF9C4;border-left:4px solid var(--gold);}
+.dialogue-line.B{background:#E8F5E9;border-left:4px solid var(--red);}
+.dialogue-line .speaker{font-weight:700;color:var(--red);margin-right:8px;}
+.dialogue-line .dcn{font-family:'Noto Sans TC';font-size:1.12em;}
+.dialogue-line .dpy{color:var(--muted);font-style:italic;font-size:.86em;margin:3px 0;}
+.dialogue-line .dvt{color:#555;font-size:.92em;}
+
+/* Matching */
+.match-score{text-align:center;font-size:1.25em;font-weight:700;color:var(--red);margin-bottom:14px;}
+.match-wrap{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.match-col{display:flex;flex-direction:column;gap:10px;}
+.match-item{padding:14px 16px;background:var(--paper);border:2px solid #eee;border-radius:12px;cursor:pointer;transition:all .2s;font-size:1.05em;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;}
+.match-item.cn{font-family:'Noto Sans TC';}
+.match-item:hover:not(.matched):not(.selected){border-color:var(--gold);background:#fff8e7;}
+.match-item.selected{border-color:var(--red);background:var(--soft-red);}
+.match-item.matched{background:#C8E6C9;border-color:var(--green);color:#1B5E20;cursor:default;opacity:.75;}
+.match-item.wrong{animation:shake .45s;border-color:var(--red);background:#f8d7da;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.replay-btn{display:block;margin:18px auto 0;background:var(--gold);color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-weight:600;}
+.replay-btn:hover{background:var(--red);}
+
+/* Arrangement */
+.arr-wrap{background:var(--paper);border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.arr-counter{color:var(--muted);margin-bottom:8px;font-size:.95em;}
+.arr-hint{color:var(--red);margin-bottom:14px;font-weight:600;font-size:1.05em;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.arr-label{font-weight:600;color:var(--muted);font-size:.9em;margin:14px 0 6px;}
+.arr-answer{min-height:60px;padding:14px;background:#faf6ec;border:2px dashed var(--gold);border-radius:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.arr-bank{padding:14px;background:#FAFAFA;border-radius:12px;display:flex;flex-wrap:wrap;gap:8px;min-height:50px;}
+.word-chip{padding:8px 14px;background:#fff;border:2px solid var(--gold);border-radius:10px;cursor:pointer;font-family:'Noto Sans TC';font-size:1.1em;user-select:none;transition:all .2s;}
+.word-chip:hover{background:var(--soft-red);transform:translateY(-2px);}
+.word-chip.correct{background:#d4edda;border-color:var(--green);color:#155724;}
+.word-chip.wrong{background:#f8d7da;border-color:var(--red);color:#721c24;}
+.arr-controls{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.arr-btn{padding:10px 18px;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:.95em;}
+.arr-btn.primary{background:linear-gradient(135deg,var(--red),var(--gold));color:#fff;}
+.arr-btn.secondary{background:var(--soft-red);color:var(--red);}
+.arr-btn.ghost{background:#f0f0f0;color:#555;}
+.arr-btn:hover{opacity:.9;transform:translateY(-1px);}
+.arr-feedback{margin-top:14px;padding:12px 14px;border-radius:10px;font-weight:600;display:none;}
+.arr-feedback.show{display:block;}
+.arr-feedback.ok{background:#d4edda;color:#155724;}
+.arr-feedback.no{background:#f8d7da;color:#721c24;}
+.empty-hint{color:#bbb;font-style:italic;font-size:.95em;}
+
+/* Stroke order */
+.stroke-info{background:var(--soft-red);color:var(--red);padding:12px 16px;border-radius:10px;margin-bottom:18px;font-size:.92em;}
+.stroke-info i{margin-right:6px;}
+.stroke-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px;}
+.stroke-card{background:var(--paper);border-radius:14px;padding:16px 14px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.06);border:2px solid var(--gold);}
+.stroke-card .stroke-canvas{width:150px;height:150px;margin:0 auto;background:#F1F8E9;border:1px dashed #66BB6A;border-radius:8px;overflow:hidden;}
+.stroke-card .char{font-family:'Noto Sans TC';font-size:1.5em;color:var(--red);margin:10px 0 2px;font-weight:700;}
+.stroke-card .pinfo{color:var(--muted);font-size:.82em;margin-bottom:8px;min-height:1.3em;}
+.stroke-controls{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:6px;}
+.stroke-btn{padding:6px 9px;border:none;border-radius:8px;background:var(--soft-red);color:var(--red);cursor:pointer;font-size:.78em;font-weight:600;}
+.stroke-btn:hover{background:var(--red);color:#fff;}
+.stroke-btn.primary{background:var(--gold);color:#fff;}
+.stroke-btn.primary:hover{background:var(--red);}
+
+/* Songs */
+.song-card{background:var(--paper);border-radius:18px;padding:24px;margin-bottom:18px;box-shadow:0 4px 12px rgba(76,175,80,.1);border:2px solid var(--gold);}
+.song-title{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:2px dashed var(--gold);flex-wrap:wrap;}
+.song-title i.song-icon{font-size:1.6em;color:#fff;background:var(--gold);padding:14px;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;}
+.song-title h3{margin:0;font-family:'Noto Sans TC';color:var(--red);font-size:1.4em;}
+.song-title .vi-title{color:var(--muted);font-size:.95em;margin-top:2px;}
+.song-play-btn{background:linear-gradient(135deg,var(--red),var(--gold));color:#fff;border:none;padding:10px 18px;border-radius:10px;cursor:pointer;font-weight:600;margin-left:auto;}
+.song-play-btn:hover{transform:translateY(-2px);box-shadow:0 4px 10px rgba(76,175,80,.3);}
+.song-line{display:flex;align-items:center;padding:14px;margin:10px 0;background:var(--soft-red);border-radius:12px;border-left:5px solid var(--gold);transition:all .2s;}
+.song-line:hover{transform:translateX(4px);box-shadow:0 2px 8px rgba(76,175,80,.15);}
+.song-line-num{background:var(--red);color:#fff;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;margin-right:14px;font-size:.95em;}
+.song-line-text{flex:1;min-width:0;}
+.song-line-cn{font-family:'Noto Sans TC';font-size:1.35em;color:#333;font-weight:600;display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
+.song-line-py{color:var(--muted);font-style:italic;margin-top:4px;font-size:.9em;}
+.song-line-vi{color:#555;margin-top:4px;font-size:.92em;}
+
+</style>
+</head>
+<body>
+<div class="header">
+  <h1 class="cn">學華語向前走 1B</h1>
+  <div class="sub">Let's Learn Mandarin (For Children) 1B</div>
+  <div class="vn">🎈 6 bài học cho bé · 🔊 TTS · ✍️ Bút thuận</div>
+  <button class="stop-tts" onclick="stopSpeak()" title="Dừng phát âm"><i class="fa-solid fa-stop"></i> Dừng</button>
+</div>
+
+<div class="container">
+  <div id="home"><div class="home-grid" id="homeGrid"></div></div>
+
+  <div id="lesson">
+    <div class="lesson-header">
+      <button class="back-btn" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+      <div class="lesson-title">
+        <h2 id="lTitleCN" class="cn"></h2>
+        <p id="lTitleVI"></p>
+      </div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="vocab" onclick="switchTab('vocab')"><i class="fa-solid fa-clone"></i> Từ vựng</button>
+      <button class="tab-btn" data-tab="grammar" onclick="switchTab('grammar')"><i class="fa-solid fa-book"></i> Ngữ pháp</button>
+      <button class="tab-btn" data-tab="passage" onclick="switchTab('passage')"><i class="fa-solid fa-align-left"></i> Đoạn văn</button>
+      <button class="tab-btn" data-tab="matching" onclick="switchTab('matching')"><i class="fa-solid fa-link"></i> Nối từ</button>
+      <button class="tab-btn" data-tab="arrange" onclick="switchTab('arrange')"><i class="fa-solid fa-arrows-up-down-left-right"></i> Sắp xếp câu</button>
+      <button class="tab-btn" data-tab="strokes" onclick="switchTab('strokes')"><i class="fa-solid fa-pen-nib"></i> Bút thuận</button>
+      <button class="tab-btn" data-tab="songs" onclick="switchTab('songs')"><i class="fa-solid fa-music"></i> Bài hát</button>
+    </div>
+    <div id="tabContent"></div>
+  </div>
+</div>
+
+<script>
+const LESSONS = [{"id": 7, "cn": "我會打網球", "vi": "Mình biết chơi quần vợt", "icon": "fa-table-tennis-paddle-ball", "vocab": [{"hanzi": "會", "pinyin": "huì", "vi": "biết, có thể", "hv": "Hội", "icon": "fa-circle-check", "ex_cn": "我會游泳。", "ex_pinyin": "Wǒ huì yóuyǒng.", "ex_vi": "Mình biết bơi."}, {"hanzi": "不會", "pinyin": "bú huì", "vi": "không biết", "hv": "Bất hội", "icon": "fa-circle-xmark", "ex_cn": "我不會跳舞。", "ex_pinyin": "Wǒ bú huì tiàowǔ.", "ex_vi": "Mình không biết nhảy."}, {"hanzi": "打", "pinyin": "dǎ", "vi": "chơi (bóng)", "hv": "Đả", "icon": "fa-baseball-bat-ball", "ex_cn": "我打網球。", "ex_pinyin": "Wǒ dǎ wǎngqiú.", "ex_vi": "Mình chơi quần vợt."}, {"hanzi": "網球", "pinyin": "wǎngqiú", "vi": "quần vợt", "hv": "Võng cầu", "icon": "fa-table-tennis-paddle-ball", "ex_cn": "網球很好玩。", "ex_pinyin": "Wǎngqiú hěn hǎowán.", "ex_vi": "Quần vợt rất vui."}, {"hanzi": "籃球", "pinyin": "lánqiú", "vi": "bóng rổ", "hv": "Lam cầu", "icon": "fa-basketball", "ex_cn": "他打籃球。", "ex_pinyin": "Tā dǎ lánqiú.", "ex_vi": "Cậu ấy chơi bóng rổ."}, {"hanzi": "游泳", "pinyin": "yóuyǒng", "vi": "bơi lội", "hv": "Du vịnh", "icon": "fa-person-swimming", "ex_cn": "我每天游泳。", "ex_pinyin": "Wǒ měitiān yóuyǒng.", "ex_vi": "Ngày nào mình cũng bơi."}, {"hanzi": "跑步", "pinyin": "pǎobù", "vi": "chạy bộ", "hv": "Bào bộ", "icon": "fa-person-running", "ex_cn": "我們去跑步。", "ex_pinyin": "Wǒmen qù pǎobù.", "ex_vi": "Chúng mình đi chạy bộ."}, {"hanzi": "騎腳踏車", "pinyin": "qí jiǎotàchē", "vi": "đi xe đạp", "hv": "Kỵ cước đạp xa", "icon": "fa-bicycle", "ex_cn": "我會騎腳踏車。", "ex_pinyin": "Wǒ huì qí jiǎotàchē.", "ex_vi": "Mình biết đi xe đạp."}, {"hanzi": "唱歌", "pinyin": "chànggē", "vi": "hát", "hv": "Xướng ca", "icon": "fa-microphone", "ex_cn": "妹妹愛唱歌。", "ex_pinyin": "Mèimei ài chànggē.", "ex_vi": "Em gái thích hát."}, {"hanzi": "跳舞", "pinyin": "tiàowǔ", "vi": "nhảy", "hv": "Khiêu vũ", "icon": "fa-person-dress", "ex_cn": "她跳舞很美。", "ex_pinyin": "Tā tiàowǔ hěn měi.", "ex_vi": "Cô ấy nhảy đẹp."}, {"hanzi": "畫畫", "pinyin": "huàhuà", "vi": "vẽ tranh", "hv": "Họa họa", "icon": "fa-paintbrush", "ex_cn": "小弟畫畫。", "ex_pinyin": "Xiǎodì huàhuà.", "ex_vi": "Em trai vẽ tranh."}, {"hanzi": "寫字", "pinyin": "xiězì", "vi": "viết chữ", "hv": "Tả tự", "icon": "fa-pen", "ex_cn": "我會寫字。", "ex_pinyin": "Wǒ huì xiězì.", "ex_vi": "Mình biết viết chữ."}, {"hanzi": "一起", "pinyin": "yīqǐ", "vi": "cùng nhau", "hv": "Nhất khởi", "icon": "fa-people-group", "ex_cn": "我們一起玩。", "ex_pinyin": "Wǒmen yīqǐ wán.", "ex_vi": "Chúng mình cùng chơi."}, {"hanzi": "好玩", "pinyin": "hǎowán", "vi": "vui, thú vị", "hv": "Hảo ngoạn", "icon": "fa-face-smile", "ex_cn": "網球真好玩！", "ex_pinyin": "Wǎngqiú zhēn hǎowán!", "ex_vi": "Quần vợt vui thật!"}], "grammar": [{"title": "Biết làm: 會 + V", "formula": "S + 會 + V", "examples": [{"cn": "我會游泳。", "pinyin": "Wǒ huì yóuyǒng.", "vi": "Mình biết bơi."}, {"cn": "妹妹會唱歌。", "pinyin": "Mèimei huì chànggē.", "vi": "Em gái biết hát."}]}, {"title": "Không biết: 不會 + V", "formula": "S + 不會 + V", "examples": [{"cn": "我不會跳舞。", "pinyin": "Wǒ bú huì tiàowǔ.", "vi": "Mình không biết nhảy."}, {"cn": "弟弟不會騎腳踏車。", "pinyin": "Dìdi bú huì qí jiǎotàchē.", "vi": "Em trai không biết đi xe đạp."}]}, {"title": "Hỏi biết không: 會不會", "formula": "S + 會不會 + V？", "examples": [{"cn": "你會不會打網球？", "pinyin": "Nǐ huì bú huì dǎ wǎngqiú?", "vi": "Bạn biết chơi quần vợt không?"}, {"cn": "他會不會游泳？", "pinyin": "Tā huì bú huì yóuyǒng?", "vi": "Cậu ấy biết bơi không?"}]}, {"title": "Muốn làm: 想 + V", "formula": "S + 想 + V", "examples": [{"cn": "我想打籃球。", "pinyin": "Wǒ xiǎng dǎ lánqiú.", "vi": "Mình muốn chơi bóng rổ."}, {"cn": "妹妹想畫畫。", "pinyin": "Mèimei xiǎng huàhuà.", "vi": "Em gái muốn vẽ tranh."}]}, {"title": "Cùng nhau: 一起 + V", "formula": "S + 一起 + V", "examples": [{"cn": "我們一起游泳吧！", "pinyin": "Wǒmen yīqǐ yóuyǒng ba!", "vi": "Chúng mình cùng bơi đi!"}, {"cn": "一起跑步吧！", "pinyin": "Yīqǐ pǎobù ba!", "vi": "Cùng chạy bộ nào!"}]}], "passage": {"cn": "我會打網球，也會游泳。我哥哥會騎腳踏車，可是不會打籃球。我們常常一起運動。網球真好玩，希望你也來跟我們一起打！", "pinyin": "Wǒ huì dǎ wǎngqiú, yě huì yóuyǒng. Wǒ gēge huì qí jiǎotàchē, kěshì bú huì dǎ lánqiú. Wǒmen chángcháng yīqǐ yùndòng. Wǎngqiú zhēn hǎowán, xīwàng nǐ yě lái gēn wǒmen yīqǐ dǎ!", "vi": "Mình biết chơi quần vợt, cũng biết bơi. Anh trai mình biết đi xe đạp, nhưng không biết chơi bóng rổ. Chúng mình hay vận động cùng nhau. Quần vợt vui thật, mong bạn cũng đến chơi cùng chúng mình!"}, "dialogue": [{"speaker": "A", "cn": "你會打網球嗎？", "pinyin": "Nǐ huì dǎ wǎngqiú ma?", "vi": "Bạn biết chơi quần vợt không?"}, {"speaker": "B", "cn": "我會！我也會游泳。你呢？", "pinyin": "Wǒ huì! Wǒ yě huì yóuyǒng. Nǐ ne?", "vi": "Mình biết! Mình còn biết bơi. Còn bạn?"}, {"speaker": "A", "cn": "我會打籃球，不會打網球。", "pinyin": "Wǒ huì dǎ lánqiú, bú huì dǎ wǎngqiú.", "vi": "Mình biết bóng rổ, không biết quần vợt."}, {"speaker": "B", "cn": "沒關係，我教你！", "pinyin": "Méi guānxi, wǒ jiāo nǐ!", "vi": "Không sao, mình dạy bạn!"}, {"speaker": "A", "cn": "太好了！我們一起去公園吧。", "pinyin": "Tài hǎo le! Wǒmen yīqǐ qù gōngyuán ba.", "vi": "Tuyệt quá! Chúng mình cùng đi công viên đi."}, {"speaker": "B", "cn": "好啊！網球真好玩！", "pinyin": "Hǎo a! Wǎngqiú zhēn hǎowán!", "vi": "OK! Quần vợt vui thật!"}], "matching": [["會", "biết"], ["不會", "không biết"], ["打", "chơi (bóng)"], ["網球", "quần vợt"], ["籃球", "bóng rổ"], ["游泳", "bơi lội"], ["跑步", "chạy bộ"], ["騎腳踏車", "đi xe đạp"], ["唱歌", "hát"], ["跳舞", "nhảy"], ["畫畫", "vẽ tranh"], ["一起", "cùng nhau"]], "arrangement": [{"words": ["我", "會", "打", "網球", "。"], "vi": "Mình biết chơi quần vợt."}, {"words": ["你", "會不會", "游泳", "？"], "vi": "Bạn biết bơi không?"}, {"words": ["哥哥", "不會", "跳舞", "。"], "vi": "Anh trai không biết nhảy."}, {"words": ["我們", "一起", "跑步", "吧", "！"], "vi": "Chúng mình cùng chạy bộ đi!"}, {"words": ["妹妹", "想", "畫畫", "。"], "vi": "Em gái muốn vẽ tranh."}, {"words": ["網球", "真", "好玩", "！"], "vi": "Quần vợt vui thật!"}], "songs": [{"title_cn": "運動歌", "title_vi": "Bài hát vận động", "lines": [{"cn": "我會打網球", "pinyin": "Wǒ huì dǎ wǎngqiú", "vi": "Mình biết chơi quần vợt"}, {"cn": "網球網球真好玩", "pinyin": "Wǎngqiú wǎngqiú zhēn hǎowán", "vi": "Quần vợt quần vợt thật vui"}, {"cn": "游泳就像小魚兒", "pinyin": "Yóuyǒng jiù xiàng xiǎo yú'r", "vi": "Bơi lội như chú cá nhỏ"}, {"cn": "運動讓我更健康", "pinyin": "Yùndòng ràng wǒ gèng jiànkāng", "vi": "Vận động giúp mình khỏe hơn"}]}]}, {"id": 8, "cn": "我喜歡的顏色", "vi": "Màu sắc mình thích", "icon": "fa-palette", "vocab": [{"hanzi": "顏色", "pinyin": "yánsè", "vi": "màu sắc", "hv": "Nhan sắc", "icon": "fa-palette", "ex_cn": "你喜歡什麼顏色？", "ex_pinyin": "Nǐ xǐhuān shénme yánsè?", "ex_vi": "Bạn thích màu gì?"}, {"hanzi": "紅色", "pinyin": "hóngsè", "vi": "màu đỏ", "hv": "Hồng sắc", "icon": "fa-circle", "ex_cn": "紅色像太陽。", "ex_pinyin": "Hóngsè xiàng tàiyáng.", "ex_vi": "Màu đỏ như mặt trời."}, {"hanzi": "黃色", "pinyin": "huángsè", "vi": "màu vàng", "hv": "Hoàng sắc", "icon": "fa-circle", "ex_cn": "黃色像香蕉。", "ex_pinyin": "Huángsè xiàng xiāngjiāo.", "ex_vi": "Màu vàng như chuối."}, {"hanzi": "藍色", "pinyin": "lánsè", "vi": "màu xanh dương", "hv": "Lam sắc", "icon": "fa-circle", "ex_cn": "藍色像大海。", "ex_pinyin": "Lánsè xiàng dàhǎi.", "ex_vi": "Màu xanh như biển."}, {"hanzi": "綠色", "pinyin": "lǜsè", "vi": "màu xanh lá", "hv": "Lục sắc", "icon": "fa-circle", "ex_cn": "綠色像葉子。", "ex_pinyin": "Lǜsè xiàng yèzi.", "ex_vi": "Màu xanh lá như lá cây."}, {"hanzi": "黑色", "pinyin": "hēisè", "vi": "màu đen", "hv": "Hắc sắc", "icon": "fa-circle", "ex_cn": "黑色的狗。", "ex_pinyin": "Hēisè de gǒu.", "ex_vi": "Con chó màu đen."}, {"hanzi": "白色", "pinyin": "báisè", "vi": "màu trắng", "hv": "Bạch sắc", "icon": "fa-circle", "ex_cn": "白色像雲朵。", "ex_pinyin": "Báisè xiàng yúnduǒ.", "ex_vi": "Màu trắng như mây."}, {"hanzi": "粉紅色", "pinyin": "fěnhóngsè", "vi": "màu hồng", "hv": "Phấn hồng sắc", "icon": "fa-circle", "ex_cn": "粉紅色很可愛。", "ex_pinyin": "Fěnhóngsè hěn kě'ài.", "ex_vi": "Màu hồng dễ thương."}, {"hanzi": "衣服", "pinyin": "yīfu", "vi": "quần áo", "hv": "Y phục", "icon": "fa-shirt", "ex_cn": "這件衣服真好看。", "ex_pinyin": "Zhè jiàn yīfu zhēn hǎokàn.", "ex_vi": "Bộ áo này đẹp thật."}, {"hanzi": "鞋子", "pinyin": "xiézi", "vi": "giày", "hv": "Hài tử", "icon": "fa-shoe-prints", "ex_cn": "我的鞋子是紅色。", "ex_pinyin": "Wǒ de xiézi shì hóngsè.", "ex_vi": "Giày của mình màu đỏ."}, {"hanzi": "帽子", "pinyin": "màozi", "vi": "cái mũ", "hv": "Mạo tử", "icon": "fa-hat-wizard", "ex_cn": "他的帽子很大。", "ex_pinyin": "Tā de màozi hěn dà.", "ex_vi": "Mũ của cậu ấy to."}, {"hanzi": "包包", "pinyin": "bāobao", "vi": "cái túi", "hv": "Bao bao", "icon": "fa-bag-shopping", "ex_cn": "我的包包是粉紅色。", "ex_pinyin": "Wǒ de bāobao shì fěnhóngsè.", "ex_vi": "Túi của mình màu hồng."}, {"hanzi": "好看", "pinyin": "hǎokàn", "vi": "đẹp", "hv": "Hảo khán", "icon": "fa-star", "ex_cn": "這個顏色真好看。", "ex_pinyin": "Zhège yánsè zhēn hǎokàn.", "ex_vi": "Màu này đẹp thật."}, {"hanzi": "最", "pinyin": "zuì", "vi": "nhất", "hv": "Tối", "icon": "fa-trophy", "ex_cn": "我最喜歡紅色。", "ex_pinyin": "Wǒ zuì xǐhuān hóngsè.", "ex_vi": "Mình thích nhất màu đỏ."}], "grammar": [{"title": "Thích nhất: 最喜歡", "formula": "S + 最喜歡 + N", "examples": [{"cn": "我最喜歡藍色。", "pinyin": "Wǒ zuì xǐhuān lánsè.", "vi": "Mình thích nhất màu xanh dương."}, {"cn": "妹妹最喜歡粉紅色。", "pinyin": "Mèimei zuì xǐhuān fěnhóngsè.", "vi": "Em gái thích nhất màu hồng."}]}, {"title": "Của ai (sở hữu): 的", "formula": "N1 + 的 + N2", "examples": [{"cn": "我的鞋子是紅色。", "pinyin": "Wǒ de xiézi shì hóngsè.", "vi": "Giày của mình màu đỏ."}, {"cn": "這是哥哥的衣服。", "pinyin": "Zhè shì gēge de yīfu.", "vi": "Đây là áo của anh trai."}]}, {"title": "Giống như: 像", "formula": "S + 像 + N", "examples": [{"cn": "紅色像太陽。", "pinyin": "Hóngsè xiàng tàiyáng.", "vi": "Màu đỏ giống mặt trời."}, {"cn": "白色像雲朵。", "pinyin": "Báisè xiàng yúnduǒ.", "vi": "Màu trắng giống mây."}]}, {"title": "Là màu: 是 + 顏色", "formula": "N + 是 + 顏色", "examples": [{"cn": "我的帽子是黃色。", "pinyin": "Wǒ de màozi shì huángsè.", "vi": "Mũ của mình màu vàng."}, {"cn": "這件衣服是綠色。", "pinyin": "Zhè jiàn yīfu shì lǜsè.", "vi": "Bộ áo này màu xanh lá."}]}, {"title": "Đẹp: 很/真 好看", "formula": "N + 很/真 + 好看", "examples": [{"cn": "這個顏色真好看！", "pinyin": "Zhège yánsè zhēn hǎokàn!", "vi": "Màu này đẹp thật!"}, {"cn": "你的鞋子很好看。", "pinyin": "Nǐ de xiézi hěn hǎokàn.", "vi": "Giày của bạn đẹp lắm."}]}], "passage": {"cn": "我最喜歡藍色，藍色像大海。我有一件藍色的衣服，還有一雙藍色的鞋子。妹妹喜歡粉紅色，她的帽子和包包都是粉紅色。我們都覺得自己的顏色最好看！", "pinyin": "Wǒ zuì xǐhuān lánsè, lánsè xiàng dàhǎi. Wǒ yǒu yí jiàn lánsè de yīfu, hái yǒu yì shuāng lánsè de xiézi. Mèimei xǐhuān fěnhóngsè, tā de màozi hé bāobao dōu shì fěnhóngsè. Wǒmen dōu juéde zìjǐ de yánsè zuì hǎokàn!", "vi": "Mình thích nhất màu xanh dương, màu xanh như biển. Mình có một bộ áo màu xanh, còn có một đôi giày màu xanh. Em gái thích màu hồng, mũ và túi của em đều màu hồng. Chúng mình đều thấy màu của mình đẹp nhất!"}, "dialogue": [{"speaker": "A", "cn": "你最喜歡什麼顏色？", "pinyin": "Nǐ zuì xǐhuān shénme yánsè?", "vi": "Bạn thích nhất màu gì?"}, {"speaker": "B", "cn": "我最喜歡紅色！你呢？", "pinyin": "Wǒ zuì xǐhuān hóngsè! Nǐ ne?", "vi": "Mình thích nhất màu đỏ! Còn bạn?"}, {"speaker": "A", "cn": "我喜歡藍色和綠色。", "pinyin": "Wǒ xǐhuān lánsè hé lǜsè.", "vi": "Mình thích màu xanh dương và xanh lá."}, {"speaker": "B", "cn": "哇！你的衣服是綠色，真好看！", "pinyin": "Wā! Nǐ de yīfu shì lǜsè, zhēn hǎokàn!", "vi": "Wow! Áo bạn màu xanh lá, đẹp thật!"}, {"speaker": "A", "cn": "謝謝！你的帽子是什麼顏色？", "pinyin": "Xièxie! Nǐ de màozi shì shénme yánsè?", "vi": "Cảm ơn! Mũ của bạn màu gì?"}, {"speaker": "B", "cn": "是黃色，黃色像香蕉！", "pinyin": "Shì huángsè, huángsè xiàng xiāngjiāo!", "vi": "Màu vàng, vàng như chuối!"}], "matching": [["顏色", "màu sắc"], ["紅色", "màu đỏ"], ["黃色", "màu vàng"], ["藍色", "màu xanh dương"], ["綠色", "màu xanh lá"], ["黑色", "màu đen"], ["白色", "màu trắng"], ["粉紅色", "màu hồng"], ["衣服", "quần áo"], ["鞋子", "giày"], ["帽子", "cái mũ"], ["最", "nhất"]], "arrangement": [{"words": ["你", "喜歡", "什麼", "顏色", "？"], "vi": "Bạn thích màu gì?"}, {"words": ["我", "最", "喜歡", "紅色", "。"], "vi": "Mình thích nhất màu đỏ."}, {"words": ["這件", "衣服", "是", "藍色", "。"], "vi": "Bộ áo này màu xanh dương."}, {"words": ["我的", "鞋子", "真", "好看", "！"], "vi": "Giày của mình đẹp thật!"}, {"words": ["黃色", "像", "香蕉", "。"], "vi": "Màu vàng giống chuối."}, {"words": ["妹妹", "的", "帽子", "是", "粉紅色", "。"], "vi": "Mũ của em gái màu hồng."}], "songs": [{"title_cn": "顏色歌", "title_vi": "Bài hát màu sắc", "lines": [{"cn": "紅色像太陽", "pinyin": "Hóngsè xiàng tàiyáng", "vi": "Màu đỏ giống mặt trời"}, {"cn": "黃色像香蕉", "pinyin": "Huángsè xiàng xiāngjiāo", "vi": "Màu vàng giống chuối"}, {"cn": "藍色像大海", "pinyin": "Lánsè xiàng dàhǎi", "vi": "Màu xanh giống biển"}, {"cn": "綠色像葉子", "pinyin": "Lǜsè xiàng yèzi", "vi": "Màu xanh lá giống lá cây"}, {"cn": "白色像雲朵", "pinyin": "Báisè xiàng yúnduǒ", "vi": "Màu trắng giống mây"}]}]}, {"id": 9, "cn": "你的學校在哪裡", "vi": "Trường bạn ở đâu?", "icon": "fa-school", "vocab": [{"hanzi": "學校", "pinyin": "xuéxiào", "vi": "trường học", "hv": "Học hiệu", "icon": "fa-school", "ex_cn": "我的學校很大。", "ex_pinyin": "Wǒ de xuéxiào hěn dà.", "ex_vi": "Trường mình rộng lắm."}, {"hanzi": "哪裡", "pinyin": "nǎlǐ", "vi": "ở đâu", "hv": "Na lý", "icon": "fa-location-dot", "ex_cn": "你家在哪裡？", "ex_pinyin": "Nǐ jiā zài nǎlǐ?", "ex_vi": "Nhà bạn ở đâu?"}, {"hanzi": "在", "pinyin": "zài", "vi": "ở, tại", "hv": "Tại", "icon": "fa-location-pin", "ex_cn": "我在學校。", "ex_pinyin": "Wǒ zài xuéxiào.", "ex_vi": "Mình ở trường."}, {"hanzi": "教室", "pinyin": "jiàoshì", "vi": "phòng học", "hv": "Giáo thất", "icon": "fa-chalkboard", "ex_cn": "教室在二樓。", "ex_pinyin": "Jiàoshì zài èr lóu.", "ex_vi": "Phòng học ở tầng 2."}, {"hanzi": "操場", "pinyin": "cāochǎng", "vi": "sân trường", "hv": "Tháo trường", "icon": "fa-flag", "ex_cn": "我們在操場玩。", "ex_pinyin": "Wǒmen zài cāochǎng wán.", "ex_vi": "Chúng mình chơi ở sân."}, {"hanzi": "圖書館", "pinyin": "túshūguǎn", "vi": "thư viện", "hv": "Đồ thư quán", "icon": "fa-book", "ex_cn": "圖書館有很多書。", "ex_pinyin": "Túshūguǎn yǒu hěn duō shū.", "ex_vi": "Thư viện có nhiều sách."}, {"hanzi": "廁所", "pinyin": "cèsuǒ", "vi": "nhà vệ sinh", "hv": "Trắc sở", "icon": "fa-restroom", "ex_cn": "廁所在那邊。", "ex_pinyin": "Cèsuǒ zài nàbiān.", "ex_vi": "Nhà vệ sinh ở đằng kia."}, {"hanzi": "旁邊", "pinyin": "pángbiān", "vi": "bên cạnh", "hv": "Bàng biên", "icon": "fa-arrows-left-right", "ex_cn": "教室在操場旁邊。", "ex_pinyin": "Jiàoshì zài cāochǎng pángbiān.", "ex_vi": "Phòng học cạnh sân."}, {"hanzi": "前面", "pinyin": "qiánmiàn", "vi": "phía trước", "hv": "Tiền diện", "icon": "fa-arrow-right", "ex_cn": "學校前面有公園。", "ex_pinyin": "Xuéxiào qiánmiàn yǒu gōngyuán.", "ex_vi": "Trước trường có công viên."}, {"hanzi": "後面", "pinyin": "hòumiàn", "vi": "phía sau", "hv": "Hậu diện", "icon": "fa-arrow-left", "ex_cn": "廁所在後面。", "ex_pinyin": "Cèsuǒ zài hòumiàn.", "ex_vi": "Nhà vệ sinh ở phía sau."}, {"hanzi": "上面", "pinyin": "shàngmiàn", "vi": "ở trên", "hv": "Thượng diện", "icon": "fa-arrow-up", "ex_cn": "書在桌子上面。", "ex_pinyin": "Shū zài zhuōzi shàngmiàn.", "ex_vi": "Sách ở trên bàn."}, {"hanzi": "下面", "pinyin": "xiàmiàn", "vi": "ở dưới", "hv": "Hạ diện", "icon": "fa-arrow-down", "ex_cn": "小狗在椅子下面。", "ex_pinyin": "Xiǎogǒu zài yǐzi xiàmiàn.", "ex_vi": "Cún ở dưới ghế."}, {"hanzi": "樓", "pinyin": "lóu", "vi": "tầng (lầu)", "hv": "Lâu", "icon": "fa-building", "ex_cn": "我家在三樓。", "ex_pinyin": "Wǒ jiā zài sān lóu.", "ex_vi": "Nhà mình tầng 3."}, {"hanzi": "這裡", "pinyin": "zhèlǐ", "vi": "ở đây", "hv": "Giá lý", "icon": "fa-location-crosshairs", "ex_cn": "這裡是我的學校。", "ex_pinyin": "Zhèlǐ shì wǒ de xuéxiào.", "ex_vi": "Đây là trường của mình."}], "grammar": [{"title": "Ở đâu: 在哪裡", "formula": "S + 在哪裡？", "examples": [{"cn": "你家在哪裡？", "pinyin": "Nǐ jiā zài nǎlǐ?", "vi": "Nhà bạn ở đâu?"}, {"cn": "廁所在哪裡？", "pinyin": "Cèsuǒ zài nǎlǐ?", "vi": "Nhà vệ sinh ở đâu?"}]}, {"title": "Ở chỗ nào: 在 + Địa điểm", "formula": "S + 在 + Nơi", "examples": [{"cn": "我在教室。", "pinyin": "Wǒ zài jiàoshì.", "vi": "Mình ở phòng học."}, {"cn": "妹妹在操場。", "pinyin": "Mèimei zài cāochǎng.", "vi": "Em gái ở sân trường."}]}, {"title": "Bên cạnh: 在 ... 旁邊", "formula": "A + 在 + B + 旁邊", "examples": [{"cn": "教室在圖書館旁邊。", "pinyin": "Jiàoshì zài túshūguǎn pángbiān.", "vi": "Phòng học cạnh thư viện."}, {"cn": "我在你旁邊。", "pinyin": "Wǒ zài nǐ pángbiān.", "vi": "Mình ở cạnh bạn."}]}, {"title": "Có cái gì: 有", "formula": "Nơi + 有 + N", "examples": [{"cn": "學校裡有教室。", "pinyin": "Xuéxiào lǐ yǒu jiàoshì.", "vi": "Trong trường có phòng học."}, {"cn": "圖書館有書。", "pinyin": "Túshūguǎn yǒu shū.", "vi": "Thư viện có sách."}]}, {"title": "Phương vị: 上/下/前/後/旁邊", "formula": "在 + N + 上/下/前/後/旁邊", "examples": [{"cn": "貓在椅子下面。", "pinyin": "Māo zài yǐzi xiàmiàn.", "vi": "Mèo ở dưới ghế."}, {"cn": "書在桌子上面。", "pinyin": "Shū zài zhuōzi shàngmiàn.", "vi": "Sách ở trên bàn."}]}], "passage": {"cn": "我的學校很大。教室在二樓，操場在學校前面。圖書館旁邊是廁所。下課的時候，我們常常去操場玩，也去圖書館看書。我很喜歡我的學校！", "pinyin": "Wǒ de xuéxiào hěn dà. Jiàoshì zài èr lóu, cāochǎng zài xuéxiào qiánmiàn. Túshūguǎn pángbiān shì cèsuǒ. Xiàkè de shíhòu, wǒmen chángcháng qù cāochǎng wán, yě qù túshūguǎn kàn shū. Wǒ hěn xǐhuān wǒ de xuéxiào!", "vi": "Trường mình rộng lắm. Phòng học ở tầng 2, sân trường ở phía trước trường. Cạnh thư viện là nhà vệ sinh. Lúc tan học, chúng mình hay ra sân chơi, cũng vào thư viện đọc sách. Mình rất thích trường của mình!"}, "dialogue": [{"speaker": "A", "cn": "你的學校在哪裡？", "pinyin": "Nǐ de xuéxiào zài nǎlǐ?", "vi": "Trường của bạn ở đâu?"}, {"speaker": "B", "cn": "我的學校在公園旁邊。", "pinyin": "Wǒ de xuéxiào zài gōngyuán pángbiān.", "vi": "Trường mình ở cạnh công viên."}, {"speaker": "A", "cn": "你的教室在幾樓？", "pinyin": "Nǐ de jiàoshì zài jǐ lóu?", "vi": "Phòng học của bạn ở tầng mấy?"}, {"speaker": "B", "cn": "我的教室在三樓。", "pinyin": "Wǒ de jiàoshì zài sān lóu.", "vi": "Phòng học mình ở tầng 3."}, {"speaker": "A", "cn": "圖書館呢？", "pinyin": "Túshūguǎn ne?", "vi": "Còn thư viện?"}, {"speaker": "B", "cn": "圖書館在教室後面，很方便！", "pinyin": "Túshūguǎn zài jiàoshì hòumiàn, hěn fāngbiàn!", "vi": "Thư viện ở phía sau phòng học, tiện lắm!"}], "matching": [["學校", "trường học"], ["哪裡", "ở đâu"], ["在", "ở, tại"], ["教室", "phòng học"], ["操場", "sân trường"], ["圖書館", "thư viện"], ["廁所", "nhà vệ sinh"], ["旁邊", "bên cạnh"], ["前面", "phía trước"], ["後面", "phía sau"], ["上面", "ở trên"], ["下面", "ở dưới"]], "arrangement": [{"words": ["你", "的", "學校", "在", "哪裡", "？"], "vi": "Trường bạn ở đâu?"}, {"words": ["教室", "在", "二", "樓", "。"], "vi": "Phòng học ở tầng 2."}, {"words": ["操場", "在", "學校", "前面", "。"], "vi": "Sân ở phía trước trường."}, {"words": ["小狗", "在", "椅子", "下面", "。"], "vi": "Cún ở dưới ghế."}, {"words": ["圖書館", "旁邊", "是", "廁所", "。"], "vi": "Cạnh thư viện là nhà vệ sinh."}, {"words": ["我", "很", "喜歡", "我", "的", "學校", "。"], "vi": "Mình rất thích trường mình."}], "songs": [{"title_cn": "我的學校", "title_vi": "Trường của mình", "lines": [{"cn": "學校學校在哪裡", "pinyin": "Xuéxiào xuéxiào zài nǎlǐ", "vi": "Trường ơi trường ở đâu"}, {"cn": "就在馬路那一邊", "pinyin": "Jiù zài mǎlù nà yī biān", "vi": "Ở ngay bên kia đường"}, {"cn": "教室操場圖書館", "pinyin": "Jiàoshì cāochǎng túshūguǎn", "vi": "Phòng học, sân, thư viện"}, {"cn": "我們一起去上學", "pinyin": "Wǒmen yīqǐ qù shàngxué", "vi": "Chúng mình cùng đến trường"}]}]}, {"id": 10, "cn": "今天是星期幾", "vi": "Hôm nay thứ mấy?", "icon": "fa-calendar-week", "vocab": [{"hanzi": "星期", "pinyin": "xīngqí", "vi": "thứ, tuần", "hv": "Tinh kỳ", "icon": "fa-calendar-week", "ex_cn": "這個星期很忙。", "ex_pinyin": "Zhège xīngqí hěn máng.", "ex_vi": "Tuần này bận lắm."}, {"hanzi": "星期一", "pinyin": "xīngqí yī", "vi": "thứ Hai", "hv": "Tinh kỳ nhất", "icon": "fa-calendar-day", "ex_cn": "星期一上課。", "ex_pinyin": "Xīngqí yī shàngkè.", "ex_vi": "Thứ Hai đi học."}, {"hanzi": "星期二", "pinyin": "xīngqí èr", "vi": "thứ Ba", "hv": "Tinh kỳ nhị", "icon": "fa-calendar-day", "ex_cn": "星期二我很忙。", "ex_pinyin": "Xīngqí èr wǒ hěn máng.", "ex_vi": "Thứ Ba mình rất bận."}, {"hanzi": "星期三", "pinyin": "xīngqí sān", "vi": "thứ Tư", "hv": "Tinh kỳ tam", "icon": "fa-calendar-day", "ex_cn": "星期三放假。", "ex_pinyin": "Xīngqí sān fàngjià.", "ex_vi": "Thứ Tư được nghỉ."}, {"hanzi": "星期四", "pinyin": "xīngqí sì", "vi": "thứ Năm", "hv": "Tinh kỳ tứ", "icon": "fa-calendar-day", "ex_cn": "星期四有英文課。", "ex_pinyin": "Xīngqí sì yǒu Yīngwén kè.", "ex_vi": "Thứ Năm có lớp tiếng Anh."}, {"hanzi": "星期五", "pinyin": "xīngqí wǔ", "vi": "thứ Sáu", "hv": "Tinh kỳ ngũ", "icon": "fa-calendar-day", "ex_cn": "星期五去打球。", "ex_pinyin": "Xīngqí wǔ qù dǎqiú.", "ex_vi": "Thứ Sáu đi chơi bóng."}, {"hanzi": "星期六", "pinyin": "xīngqí liù", "vi": "thứ Bảy", "hv": "Tinh kỳ lục", "icon": "fa-calendar-day", "ex_cn": "星期六不上學。", "ex_pinyin": "Xīngqí liù bú shàngxué.", "ex_vi": "Thứ Bảy không đi học."}, {"hanzi": "星期日", "pinyin": "xīngqí rì", "vi": "chủ nhật", "hv": "Tinh kỳ nhật", "icon": "fa-calendar-day", "ex_cn": "星期日在家。", "ex_pinyin": "Xīngqí rì zài jiā.", "ex_vi": "Chủ nhật ở nhà."}, {"hanzi": "今天", "pinyin": "jīntiān", "vi": "hôm nay", "hv": "Kim thiên", "icon": "fa-calendar-check", "ex_cn": "今天是星期幾？", "ex_pinyin": "Jīntiān shì xīngqí jǐ?", "ex_vi": "Hôm nay thứ mấy?"}, {"hanzi": "明天", "pinyin": "míngtiān", "vi": "ngày mai", "hv": "Minh thiên", "icon": "fa-calendar-plus", "ex_cn": "明天見！", "ex_pinyin": "Míngtiān jiàn!", "ex_vi": "Mai gặp lại!"}, {"hanzi": "昨天", "pinyin": "zuótiān", "vi": "hôm qua", "hv": "Tạc thiên", "icon": "fa-calendar-minus", "ex_cn": "昨天我去公園。", "ex_pinyin": "Zuótiān wǒ qù gōngyuán.", "ex_vi": "Hôm qua mình đi công viên."}, {"hanzi": "上課", "pinyin": "shàngkè", "vi": "đi học, vào lớp", "hv": "Thượng khóa", "icon": "fa-chalkboard", "ex_cn": "我們八點上課。", "ex_pinyin": "Wǒmen bā diǎn shàngkè.", "ex_vi": "Chúng mình 8 giờ vào lớp."}, {"hanzi": "放假", "pinyin": "fàngjià", "vi": "nghỉ học", "hv": "Phóng giả", "icon": "fa-umbrella-beach", "ex_cn": "星期天放假。", "ex_pinyin": "Xīngqí tiān fàngjià.", "ex_vi": "Chủ nhật được nghỉ."}, {"hanzi": "週末", "pinyin": "zhōumò", "vi": "cuối tuần", "hv": "Chu mạt", "icon": "fa-mug-saucer", "ex_cn": "週末做什麼？", "ex_pinyin": "Zhōumò zuò shénme?", "ex_vi": "Cuối tuần làm gì?"}], "grammar": [{"title": "Thứ mấy: 星期幾", "formula": "S + 是 + 星期幾？", "examples": [{"cn": "今天是星期幾？", "pinyin": "Jīntiān shì xīngqí jǐ?", "vi": "Hôm nay thứ mấy?"}, {"cn": "明天是星期五。", "pinyin": "Míngtiān shì xīngqí wǔ.", "vi": "Mai là thứ Sáu."}]}, {"title": "Hôm nay/Mai/Hôm qua", "formula": "今天/明天/昨天 + V/Adj", "examples": [{"cn": "今天我去學校。", "pinyin": "Jīntiān wǒ qù xuéxiào.", "vi": "Hôm nay mình đi học."}, {"cn": "昨天我在家。", "pinyin": "Zuótiān wǒ zài jiā.", "vi": "Hôm qua mình ở nhà."}]}, {"title": "Khi nào làm gì: T + V", "formula": "T + S + V", "examples": [{"cn": "星期六我去游泳。", "pinyin": "Xīngqí liù wǒ qù yóuyǒng.", "vi": "Thứ Bảy mình đi bơi."}, {"cn": "週末我們去公園。", "pinyin": "Zhōumò wǒmen qù gōngyuán.", "vi": "Cuối tuần chúng mình đi công viên."}]}, {"title": "Từ ... đến: 從 ... 到", "formula": "從 + T1 + 到 + T2", "examples": [{"cn": "從星期一到星期五上課。", "pinyin": "Cóng xīngqí yī dào xīngqí wǔ shàngkè.", "vi": "Từ thứ Hai đến thứ Sáu đi học."}, {"cn": "從早上到晚上。", "pinyin": "Cóng zǎoshang dào wǎnshang.", "vi": "Từ sáng đến tối."}]}, {"title": "Có/Không có lớp: 有/沒有 + 課", "formula": "S + 有/沒有 + 課", "examples": [{"cn": "今天有中文課。", "pinyin": "Jīntiān yǒu Zhōngwén kè.", "vi": "Hôm nay có lớp tiếng Trung."}, {"cn": "星期六沒有課。", "pinyin": "Xīngqí liù méiyǒu kè.", "vi": "Thứ Bảy không có lớp."}]}], "passage": {"cn": "今天是星期一，明天是星期二。從星期一到星期五我都要上課。星期六和星期日是週末，我可以放假，在家玩。我最喜歡星期六，因為可以跟朋友一起去打球！", "pinyin": "Jīntiān shì xīngqí yī, míngtiān shì xīngqí èr. Cóng xīngqí yī dào xīngqí wǔ wǒ dōu yào shàngkè. Xīngqí liù hé xīngqí rì shì zhōumò, wǒ kěyǐ fàngjià, zài jiā wán. Wǒ zuì xǐhuān xīngqí liù, yīnwèi kěyǐ gēn péngyǒu yīqǐ qù dǎqiú!", "vi": "Hôm nay là thứ Hai, mai là thứ Ba. Từ thứ Hai đến thứ Sáu mình đều phải đi học. Thứ Bảy và Chủ nhật là cuối tuần, mình được nghỉ, ở nhà chơi. Mình thích nhất thứ Bảy, vì được cùng bạn đi chơi bóng!"}, "dialogue": [{"speaker": "A", "cn": "今天是星期幾？", "pinyin": "Jīntiān shì xīngqí jǐ?", "vi": "Hôm nay thứ mấy?"}, {"speaker": "B", "cn": "今天是星期三。", "pinyin": "Jīntiān shì xīngqí sān.", "vi": "Hôm nay là thứ Tư."}, {"speaker": "A", "cn": "明天有中文課嗎？", "pinyin": "Míngtiān yǒu Zhōngwén kè ma?", "vi": "Mai có lớp tiếng Trung không?"}, {"speaker": "B", "cn": "有！明天星期四，有中文課。", "pinyin": "Yǒu! Míngtiān xīngqí sì, yǒu Zhōngwén kè.", "vi": "Có! Mai thứ Năm, có lớp tiếng Trung."}, {"speaker": "A", "cn": "週末你做什麼？", "pinyin": "Zhōumò nǐ zuò shénme?", "vi": "Cuối tuần bạn làm gì?"}, {"speaker": "B", "cn": "星期六放假，我們一起去打球吧！", "pinyin": "Xīngqí liù fàngjià, wǒmen yīqǐ qù dǎqiú ba!", "vi": "Thứ Bảy được nghỉ, chúng mình cùng đi chơi bóng đi!"}], "matching": [["星期", "tuần"], ["星期一", "thứ Hai"], ["星期三", "thứ Tư"], ["星期五", "thứ Sáu"], ["星期六", "thứ Bảy"], ["星期日", "chủ nhật"], ["今天", "hôm nay"], ["明天", "ngày mai"], ["昨天", "hôm qua"], ["上課", "đi học"], ["放假", "nghỉ"], ["週末", "cuối tuần"]], "arrangement": [{"words": ["今天", "是", "星期幾", "？"], "vi": "Hôm nay thứ mấy?"}, {"words": ["明天", "是", "星期五", "。"], "vi": "Mai là thứ Sáu."}, {"words": ["星期六", "我", "去", "打球", "。"], "vi": "Thứ Bảy mình đi chơi bóng."}, {"words": ["從", "星期一", "到", "星期五", "上課", "。"], "vi": "Từ thứ Hai đến thứ Sáu đi học."}, {"words": ["週末", "放假", "，", "真", "好", "！"], "vi": "Cuối tuần được nghỉ, thích thật!"}, {"words": ["昨天", "我", "在", "家", "。"], "vi": "Hôm qua mình ở nhà."}], "songs": [{"title_cn": "星期歌", "title_vi": "Bài hát các thứ trong tuần", "lines": [{"cn": "星期一到星期五", "pinyin": "Xīngqí yī dào xīngqí wǔ", "vi": "Thứ Hai đến thứ Sáu"}, {"cn": "天天都要去上學", "pinyin": "Tiāntiān dōu yào qù shàngxué", "vi": "Ngày nào cũng đến trường"}, {"cn": "星期六星期日", "pinyin": "Xīngqí liù xīngqí rì", "vi": "Thứ Bảy chủ nhật"}, {"cn": "在家裡玩遊戲", "pinyin": "Zài jiālǐ wán yóuxì", "vi": "Ở nhà chơi trò chơi"}]}]}, {"id": 11, "cn": "現在幾點", "vi": "Bây giờ mấy giờ?", "icon": "fa-clock", "vocab": [{"hanzi": "現在", "pinyin": "xiànzài", "vi": "bây giờ", "hv": "Hiện tại", "icon": "fa-clock", "ex_cn": "現在三點。", "ex_pinyin": "Xiànzài sān diǎn.", "ex_vi": "Bây giờ 3 giờ."}, {"hanzi": "點", "pinyin": "diǎn", "vi": "giờ", "hv": "Điểm", "icon": "fa-clock", "ex_cn": "現在五點。", "ex_pinyin": "Xiànzài wǔ diǎn.", "ex_vi": "Bây giờ 5 giờ."}, {"hanzi": "半", "pinyin": "bàn", "vi": "rưỡi", "hv": "Bán", "icon": "fa-circle-half-stroke", "ex_cn": "六點半起床。", "ex_pinyin": "Liù diǎn bàn qǐchuáng.", "ex_vi": "6 giờ rưỡi dậy."}, {"hanzi": "分", "pinyin": "fēn", "vi": "phút", "hv": "Phân", "icon": "fa-stopwatch", "ex_cn": "等我十分鐘。", "ex_pinyin": "Děng wǒ shí fēnzhōng.", "ex_vi": "Đợi mình 10 phút."}, {"hanzi": "早上", "pinyin": "zǎoshang", "vi": "buổi sáng", "hv": "Tảo thượng", "icon": "fa-sun", "ex_cn": "早上喝牛奶。", "ex_pinyin": "Zǎoshang hē niúnǎi.", "ex_vi": "Sáng uống sữa."}, {"hanzi": "中午", "pinyin": "zhōngwǔ", "vi": "buổi trưa", "hv": "Trung ngọ", "icon": "fa-sun", "ex_cn": "中午吃飯。", "ex_pinyin": "Zhōngwǔ chīfàn.", "ex_vi": "Trưa ăn cơm."}, {"hanzi": "下午", "pinyin": "xiàwǔ", "vi": "buổi chiều", "hv": "Hạ ngọ", "icon": "fa-cloud-sun", "ex_cn": "下午上課。", "ex_pinyin": "Xiàwǔ shàngkè.", "ex_vi": "Chiều có lớp."}, {"hanzi": "晚上", "pinyin": "wǎnshang", "vi": "buổi tối", "hv": "Vãn thượng", "icon": "fa-moon", "ex_cn": "晚上做作業。", "ex_pinyin": "Wǎnshang zuò zuòyè.", "ex_vi": "Tối làm bài tập."}, {"hanzi": "起床", "pinyin": "qǐchuáng", "vi": "thức dậy", "hv": "Khởi sàng", "icon": "fa-bed-pulse", "ex_cn": "我七點起床。", "ex_pinyin": "Wǒ qī diǎn qǐchuáng.", "ex_vi": "Mình 7 giờ dậy."}, {"hanzi": "睡覺", "pinyin": "shuìjiào", "vi": "đi ngủ", "hv": "Thụy giác", "icon": "fa-bed", "ex_cn": "九點睡覺。", "ex_pinyin": "Jiǔ diǎn shuìjiào.", "ex_vi": "9 giờ đi ngủ."}, {"hanzi": "吃飯", "pinyin": "chīfàn", "vi": "ăn cơm", "hv": "Khiết phạn", "icon": "fa-utensils", "ex_cn": "我們一起吃飯吧。", "ex_pinyin": "Wǒmen yīqǐ chīfàn ba.", "ex_vi": "Chúng mình cùng ăn cơm nào."}, {"hanzi": "上學", "pinyin": "shàngxué", "vi": "đi học", "hv": "Thượng học", "icon": "fa-school", "ex_cn": "八點上學。", "ex_pinyin": "Bā diǎn shàngxué.", "ex_vi": "8 giờ đi học."}, {"hanzi": "回家", "pinyin": "huíjiā", "vi": "về nhà", "hv": "Hồi gia", "icon": "fa-house", "ex_cn": "四點回家。", "ex_pinyin": "Sì diǎn huíjiā.", "ex_vi": "4 giờ về nhà."}, {"hanzi": "時候", "pinyin": "shíhòu", "vi": "khi, lúc", "hv": "Thời hậu", "icon": "fa-hourglass-half", "ex_cn": "吃飯的時候。", "ex_pinyin": "Chīfàn de shíhòu.", "ex_vi": "Khi ăn cơm."}], "grammar": [{"title": "Hỏi mấy giờ: 幾點", "formula": "S + 幾點 + V？", "examples": [{"cn": "現在幾點？", "pinyin": "Xiànzài jǐ diǎn?", "vi": "Bây giờ mấy giờ?"}, {"cn": "你幾點起床？", "pinyin": "Nǐ jǐ diǎn qǐchuáng?", "vi": "Bạn mấy giờ dậy?"}]}, {"title": "Mấy giờ làm gì: T點V", "formula": "T + 點 + V", "examples": [{"cn": "我七點起床。", "pinyin": "Wǒ qī diǎn qǐchuáng.", "vi": "Mình 7 giờ dậy."}, {"cn": "晚上九點睡覺。", "pinyin": "Wǎnshang jiǔ diǎn shuìjiào.", "vi": "Tối 9 giờ ngủ."}]}, {"title": "Khi nào: ...的時候", "formula": "V + 的時候", "examples": [{"cn": "吃飯的時候。", "pinyin": "Chīfàn de shíhòu.", "vi": "Khi ăn cơm."}, {"cn": "上學的時候。", "pinyin": "Shàngxué de shíhòu.", "vi": "Khi đi học."}]}, {"title": "Từ mấy giờ đến: 從幾點到", "formula": "從幾點到幾點", "examples": [{"cn": "從八點到十二點上課。", "pinyin": "Cóng bā diǎn dào shí'èr diǎn shàngkè.", "vi": "Từ 8 đến 12 giờ học."}, {"cn": "從七點到八點吃飯。", "pinyin": "Cóng qī diǎn dào bā diǎn chīfàn.", "vi": "Từ 7 đến 8 giờ ăn cơm."}]}, {"title": "Đến giờ rồi: 該V了", "formula": "該 + V + 了", "examples": [{"cn": "該睡覺了。", "pinyin": "Gāi shuìjiào le.", "vi": "Đến giờ ngủ rồi."}, {"cn": "該吃飯了。", "pinyin": "Gāi chīfàn le.", "vi": "Đến giờ ăn cơm rồi."}]}], "passage": {"cn": "早上七點，我起床了。八點上學去。中午十二點吃飯。下午四點放學回家。晚上六點全家一起吃飯。九點該睡覺了。每天都很開心！", "pinyin": "Zǎoshang qī diǎn, wǒ qǐchuáng le. Bā diǎn shàngxué qù. Zhōngwǔ shí'èr diǎn chīfàn. Xiàwǔ sì diǎn fàngxué huíjiā. Wǎnshang liù diǎn quán jiā yīqǐ chīfàn. Jiǔ diǎn gāi shuìjiào le. Měitiān dōu hěn kāixīn!", "vi": "7 giờ sáng, mình dậy. 8 giờ đi học. 12 giờ trưa ăn cơm. 4 giờ chiều tan trường về nhà. 6 giờ tối cả nhà cùng ăn cơm. 9 giờ đến giờ ngủ rồi. Ngày nào cũng vui!"}, "dialogue": [{"speaker": "A", "cn": "現在幾點？", "pinyin": "Xiànzài jǐ diǎn?", "vi": "Bây giờ mấy giờ?"}, {"speaker": "B", "cn": "現在七點半。", "pinyin": "Xiànzài qī diǎn bàn.", "vi": "Bây giờ 7 giờ rưỡi."}, {"speaker": "A", "cn": "哇！該起床了！", "pinyin": "Wā! Gāi qǐchuáng le!", "vi": "Ồ! Đến giờ dậy rồi!"}, {"speaker": "B", "cn": "你幾點上學？", "pinyin": "Nǐ jǐ diǎn shàngxué?", "vi": "Bạn mấy giờ đi học?"}, {"speaker": "A", "cn": "我八點上學，下午四點回家。", "pinyin": "Wǒ bā diǎn shàngxué, xiàwǔ sì diǎn huíjiā.", "vi": "Mình 8 giờ đi học, 4 giờ chiều về nhà."}, {"speaker": "B", "cn": "我們一起去吃飯吧！", "pinyin": "Wǒmen yīqǐ qù chīfàn ba!", "vi": "Chúng mình cùng đi ăn cơm nào!"}], "matching": [["現在", "bây giờ"], ["點", "giờ"], ["半", "rưỡi"], ["早上", "sáng"], ["中午", "trưa"], ["下午", "chiều"], ["晚上", "tối"], ["起床", "dậy"], ["睡覺", "ngủ"], ["吃飯", "ăn cơm"], ["上學", "đi học"], ["回家", "về nhà"]], "arrangement": [{"words": ["現在", "幾", "點", "？"], "vi": "Bây giờ mấy giờ?"}, {"words": ["我", "七", "點", "起床", "。"], "vi": "Mình 7 giờ dậy."}, {"words": ["晚上", "九", "點", "該", "睡覺", "了", "。"], "vi": "9 giờ tối đến giờ ngủ rồi."}, {"words": ["中午", "十二", "點", "吃飯", "。"], "vi": "12 giờ trưa ăn cơm."}, {"words": ["從", "八", "點", "到", "十二", "點", "上學", "。"], "vi": "Từ 8 đến 12 giờ đi học."}, {"words": ["我們", "一起", "回家", "吧", "！"], "vi": "Chúng mình cùng về nhà nào!"}], "songs": [{"title_cn": "時鐘歌", "title_vi": "Bài hát đồng hồ", "lines": [{"cn": "滴答滴答時鐘響", "pinyin": "Dī dā dī dā shízhōng xiǎng", "vi": "Tích tắc tích tắc đồng hồ kêu"}, {"cn": "早上七點起床了", "pinyin": "Zǎoshang qī diǎn qǐchuáng le", "vi": "Sáng 7 giờ dậy rồi"}, {"cn": "中午十二點吃飯了", "pinyin": "Zhōngwǔ shí'èr diǎn chīfàn le", "vi": "Trưa 12 giờ ăn cơm rồi"}, {"cn": "晚上九點睡覺了", "pinyin": "Wǎnshang jiǔ diǎn shuìjiào le", "vi": "Tối 9 giờ ngủ rồi"}]}]}, {"id": 12, "cn": "我喜歡的動物", "vi": "Con vật mình thích", "icon": "fa-paw", "vocab": [{"hanzi": "動物", "pinyin": "dòngwù", "vi": "con vật", "hv": "Động vật", "icon": "fa-paw", "ex_cn": "動物園有很多動物。", "ex_pinyin": "Dòngwùyuán yǒu hěn duō dòngwù.", "ex_vi": "Sở thú có nhiều con vật."}, {"hanzi": "狗", "pinyin": "gǒu", "vi": "chó", "hv": "Cẩu", "icon": "fa-dog", "ex_cn": "我家有一隻狗。", "ex_pinyin": "Wǒ jiā yǒu yì zhī gǒu.", "ex_vi": "Nhà mình có một con chó."}, {"hanzi": "貓", "pinyin": "māo", "vi": "mèo", "hv": "Miêu", "icon": "fa-cat", "ex_cn": "小貓很可愛。", "ex_pinyin": "Xiǎomāo hěn kě'ài.", "ex_vi": "Mèo con dễ thương lắm."}, {"hanzi": "鳥", "pinyin": "niǎo", "vi": "chim", "hv": "Điểu", "icon": "fa-dove", "ex_cn": "鳥兒會飛。", "ex_pinyin": "Niǎo'r huì fēi.", "ex_vi": "Chim biết bay."}, {"hanzi": "魚", "pinyin": "yú", "vi": "cá", "hv": "Ngư", "icon": "fa-fish", "ex_cn": "魚在水裡。", "ex_pinyin": "Yú zài shuǐ lǐ.", "ex_vi": "Cá ở trong nước."}, {"hanzi": "兔子", "pinyin": "tùzi", "vi": "thỏ", "hv": "Thố tử", "icon": "fa-otter", "ex_cn": "兔子愛吃菜。", "ex_pinyin": "Tùzi ài chī cài.", "ex_vi": "Thỏ thích ăn rau."}, {"hanzi": "大象", "pinyin": "dàxiàng", "vi": "voi", "hv": "Đại tượng", "icon": "fa-paw", "ex_cn": "大象很大。", "ex_pinyin": "Dàxiàng hěn dà.", "ex_vi": "Voi to lắm."}, {"hanzi": "老虎", "pinyin": "lǎohǔ", "vi": "cọp", "hv": "Lão hổ", "icon": "fa-paw", "ex_cn": "老虎很厲害。", "ex_pinyin": "Lǎohǔ hěn lìhài.", "ex_vi": "Cọp lợi hại."}, {"hanzi": "馬", "pinyin": "mǎ", "vi": "ngựa", "hv": "Mã", "icon": "fa-horse", "ex_cn": "馬會跑步。", "ex_pinyin": "Mǎ huì pǎobù.", "ex_vi": "Ngựa biết chạy."}, {"hanzi": "熊貓", "pinyin": "xióngmāo", "vi": "gấu trúc", "hv": "Hùng miêu", "icon": "fa-paw", "ex_cn": "熊貓黑白色。", "ex_pinyin": "Xióngmāo hēi bái sè.", "ex_vi": "Gấu trúc đen trắng."}, {"hanzi": "可愛", "pinyin": "kě'ài", "vi": "dễ thương", "hv": "Khả ái", "icon": "fa-face-smile", "ex_cn": "小狗真可愛。", "ex_pinyin": "Xiǎogǒu zhēn kě'ài.", "ex_vi": "Cún con thật dễ thương."}, {"hanzi": "動物園", "pinyin": "dòngwùyuán", "vi": "sở thú", "hv": "Động vật viên", "icon": "fa-tree", "ex_cn": "我想去動物園。", "ex_pinyin": "Wǒ xiǎng qù dòngwùyuán.", "ex_vi": "Mình muốn đi sở thú."}, {"hanzi": "喜歡", "pinyin": "xǐhuān", "vi": "thích", "hv": "Hỉ hoan", "icon": "fa-heart", "ex_cn": "我喜歡熊貓。", "ex_pinyin": "Wǒ xǐhuān xióngmāo.", "ex_vi": "Mình thích gấu trúc."}, {"hanzi": "看", "pinyin": "kàn", "vi": "xem, nhìn", "hv": "Khán", "icon": "fa-eye", "ex_cn": "我們去看動物。", "ex_pinyin": "Wǒmen qù kàn dòngwù.", "ex_vi": "Chúng mình đi xem con vật."}], "grammar": [{"title": "Thích con gì: 喜歡 + N", "formula": "S + 喜歡 + N", "examples": [{"cn": "我喜歡狗。", "pinyin": "Wǒ xǐhuān gǒu.", "vi": "Mình thích chó."}, {"cn": "妹妹喜歡兔子。", "pinyin": "Mèimei xǐhuān tùzi.", "vi": "Em gái thích thỏ."}]}, {"title": "Giống cái gì: 像 + N", "formula": "S + 像 + N", "examples": [{"cn": "熊貓像球。", "pinyin": "Xióngmāo xiàng qiú.", "vi": "Gấu trúc giống quả bóng."}, {"cn": "魚像小船。", "pinyin": "Yú xiàng xiǎo chuán.", "vi": "Cá giống chiếc thuyền nhỏ."}]}, {"title": "Thật + Adj: 真 + Adj", "formula": "S + 真 + Adj", "examples": [{"cn": "小貓真可愛。", "pinyin": "Xiǎomāo zhēn kě'ài.", "vi": "Mèo con thật dễ thương."}, {"cn": "大象真大。", "pinyin": "Dàxiàng zhēn dà.", "vi": "Voi thật to."}]}, {"title": "Muốn đi: 想去 + Nơi", "formula": "S + 想去 + Nơi", "examples": [{"cn": "我想去動物園。", "pinyin": "Wǒ xiǎng qù dòngwùyuán.", "vi": "Mình muốn đi sở thú."}, {"cn": "妹妹想去看熊貓。", "pinyin": "Mèimei xiǎng qù kàn xióngmāo.", "vi": "Em gái muốn đi xem gấu trúc."}]}, {"title": "Có mấy con: 有 + 數 + 隻 + N", "formula": "S + 有 + 數 + 隻 + N", "examples": [{"cn": "我有一隻狗。", "pinyin": "Wǒ yǒu yì zhī gǒu.", "vi": "Mình có một con chó."}, {"cn": "動物園有兩隻老虎。", "pinyin": "Dòngwùyuán yǒu liǎng zhī lǎohǔ.", "vi": "Sở thú có hai con cọp."}]}], "passage": {"cn": "星期天，我跟爸爸媽媽一起去動物園。動物園裡有很多動物：老虎、大象、熊貓、馬，還有可愛的兔子和小鳥。我最喜歡熊貓，因為牠真可愛！下次我還想再來看動物。", "pinyin": "Xīngqí tiān, wǒ gēn bàba māma yīqǐ qù dòngwùyuán. Dòngwùyuán lǐ yǒu hěn duō dòngwù: lǎohǔ, dàxiàng, xióngmāo, mǎ, hái yǒu kě'ài de tùzi hé xiǎo niǎo. Wǒ zuì xǐhuān xióngmāo, yīnwèi tā zhēn kě'ài! Xià cì wǒ hái xiǎng zài lái kàn dòngwù.", "vi": "Chủ nhật, mình cùng bố mẹ đi sở thú. Trong sở thú có rất nhiều con vật: cọp, voi, gấu trúc, ngựa, còn có thỏ dễ thương và chim nhỏ. Mình thích nhất gấu trúc, vì nó thật dễ thương! Lần sau mình muốn đến xem con vật nữa."}, "dialogue": [{"speaker": "A", "cn": "你喜歡什麼動物？", "pinyin": "Nǐ xǐhuān shénme dòngwù?", "vi": "Bạn thích con gì?"}, {"speaker": "B", "cn": "我最喜歡熊貓！你呢？", "pinyin": "Wǒ zuì xǐhuān xióngmāo! Nǐ ne?", "vi": "Mình thích nhất gấu trúc! Còn bạn?"}, {"speaker": "A", "cn": "我喜歡狗，我家有一隻狗。", "pinyin": "Wǒ xǐhuān gǒu, wǒ jiā yǒu yì zhī gǒu.", "vi": "Mình thích chó, nhà mình có một con chó."}, {"speaker": "B", "cn": "真好！你的狗叫什麼名字？", "pinyin": "Zhēn hǎo! Nǐ de gǒu jiào shénme míngzi?", "vi": "Tốt thật! Con chó của bạn tên gì?"}, {"speaker": "A", "cn": "牠叫小白，很可愛！", "pinyin": "Tā jiào Xiǎobái, hěn kě'ài!", "vi": "Nó tên là Tiểu Bạch, rất dễ thương!"}, {"speaker": "B", "cn": "我們一起去動物園吧！", "pinyin": "Wǒmen yīqǐ qù dòngwùyuán ba!", "vi": "Chúng mình cùng đi sở thú đi!"}], "matching": [["動物", "con vật"], ["狗", "chó"], ["貓", "mèo"], ["鳥", "chim"], ["魚", "cá"], ["兔子", "thỏ"], ["大象", "voi"], ["老虎", "cọp"], ["馬", "ngựa"], ["熊貓", "gấu trúc"], ["可愛", "dễ thương"], ["動物園", "sở thú"]], "arrangement": [{"words": ["我", "喜歡", "熊貓", "。"], "vi": "Mình thích gấu trúc."}, {"words": ["小貓", "真", "可愛", "！"], "vi": "Mèo con thật dễ thương!"}, {"words": ["我", "想", "去", "動物園", "。"], "vi": "Mình muốn đi sở thú."}, {"words": ["我家", "有", "一", "隻", "狗", "。"], "vi": "Nhà mình có một con chó."}, {"words": ["動物園", "裡", "有", "很多", "動物", "。"], "vi": "Sở thú có rất nhiều con vật."}, {"words": ["我們", "一起", "去", "看", "老虎", "吧", "！"], "vi": "Chúng mình cùng đi xem cọp nào!"}], "songs": [{"title_cn": "動物歌", "title_vi": "Bài hát động vật", "lines": [{"cn": "小狗汪汪汪", "pinyin": "Xiǎogǒu wāng wāng wāng", "vi": "Chú chó nhỏ gâu gâu gâu"}, {"cn": "小貓喵喵喵", "pinyin": "Xiǎomāo miāo miāo miāo", "vi": "Chú mèo nhỏ meo meo meo"}, {"cn": "小鳥啾啾啾", "pinyin": "Xiǎoniǎo jiū jiū jiū", "vi": "Chú chim nhỏ chíu chíu chíu"}, {"cn": "小魚游游游", "pinyin": "Xiǎoyú yóu yóu yóu", "vi": "Chú cá nhỏ bơi bơi bơi"}, {"cn": "動物真可愛", "pinyin": "Dòngwù zhēn kě'ài", "vi": "Con vật thật dễ thương"}]}]}];
+
+const state = {lessonIdx:0,tab:"vocab",arrIdx:0,arrAns:[],arrBank:[],matchSelCN:null,matchScore:0,writers:{}};
+
+// ========= TTS =========
+let voices = [];
+
+function loadVoices() {
+  voices = speechSynthesis.getVoices();
+}
+
+// rất quan trọng cho iPhone
+speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+
+let unlocked = false;
+
+document.addEventListener('click', () => {
+  if (!unlocked) {
+    const u = new SpeechSynthesisUtterance(".");
+    speechSynthesis.speak(u);
+    speechSynthesis.cancel();
+    unlocked = true;
+  }
+});
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) { alert('Trình duyệt không hỗ trợ phát âm.'); return; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  
+	const zhVoice = voices.find(v => 
+		v.lang === "zh-TW" || v.lang === "zh-CN"
+	  );
+
+  u.lang = zhVoice ? zhVoice.lang : "zh-TW";
+  u.rate = 0.7;
+  u.pitch = 1.0;
+  window.speechSynthesis.speak(u);
+  
+	if (!zhVoice) {
+	  const audio = new Audio(`audio/${text}.mp3`);
+	  audio.play();
+	}
+
+}
+function stopSpeak() { window.speechSynthesis.cancel(); }
+function spk(t, big) {
+  const cls = big ? 'spk big' : 'spk';
+  const enc = JSON.stringify(t).replace(/"/g, '&quot;');
+  return `<button class="${cls}" onclick="event.stopPropagation();speak(${enc})" title="Phát âm"><i class="fa-solid fa-volume-high"></i></button>`;
+}
+
+function shuffle(a){return a.slice().sort(()=>Math.random()-0.5);}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
+
+function renderHome(){
+  document.getElementById("home").style.display="block";
+  document.getElementById("lesson").style.display="none";
+  const grid=document.getElementById("homeGrid");
+  grid.innerHTML=LESSONS.map((l,i)=>`
+    <div class="lesson-card" onclick="openLesson(${i})">
+      <div class="num">Bài ${l.id}</div>
+      <div class="icon"><i class="fa-solid ${l.icon}"></i></div>
+      <div class="cn-title">${esc(l.cn)}</div>
+      <div class="vi-title">${esc(l.vi)}</div>
+    </div>`).join("");
+}
+
+function goHome(){stopSpeak();state.tab="vocab";state.arrIdx=0;renderHome();window.scrollTo({top:0,behavior:"smooth"});}
+
+function openLesson(idx){
+  stopSpeak();
+  state.lessonIdx=idx;state.tab="vocab";state.arrIdx=0;
+  document.getElementById("home").style.display="none";
+  document.getElementById("lesson").style.display="block";
+  const l=LESSONS[idx];
+  document.getElementById("lTitleCN").textContent="Bài "+l.id+": "+l.cn;
+  document.getElementById("lTitleVI").textContent=l.vi;
+  switchTab("vocab");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function switchTab(name){
+  stopSpeak();
+  state.tab=name;
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
+  const L=LESSONS[state.lessonIdx];
+  if(name==="vocab")renderVocab(L);
+  else if(name==="grammar")renderGrammar(L);
+  else if(name==="passage")renderPassage(L);
+  else if(name==="matching")renderMatching(L);
+  else if(name==="arrange"){state.arrIdx=0;renderArrangement(L);}
+  else if(name==="strokes")renderStrokes(L);
+  else if(name==="songs")renderSongs(L);
+}
+
+function renderVocab(L){
+  const html=`<div class="vocab-grid">`+L.vocab.map(v=>`
+    <div class="flashcard" onclick="this.classList.toggle('flipped')">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <div class="fa-ic"><i class="fa-solid ${v.icon}"></i></div>
+          <div class="hanzi-wrap"><div class="hanzi">${esc(v.hanzi)}</div>${spk(v.hanzi,true)}</div>
+          <div class="pinyin">${esc(v.pinyin)}</div>
+          <div class="hint"><i class="fa-solid fa-rotate"></i> Bấm để lật</div>
+        </div>
+        <div class="flashcard-back">
+          <p class="vi">${esc(v.vi)}</p>
+          <div class="hv">Hán Việt: ${esc(v.hv)}</div>
+          <div class="ex">
+            <div class="ecn">${esc(v.ex_cn)}${spk(v.ex_cn)}</div>
+            <div class="epy">${esc(v.ex_pinyin)}</div>
+            <div class="evt">${esc(v.ex_vi)}</div>
+          </div>
+        </div>
+      </div>
+    </div>`).join("")+`</div>`;
+  document.getElementById("tabContent").innerHTML=html;
+}
+
+function renderGrammar(L){
+  const html=L.grammar.map(g=>`
+    <div class="grammar-card">
+      <h3>${esc(g.title)}</h3>
+      <div class="formula">${esc(g.formula)}</div>
+      ${g.examples.map(e=>`
+        <div class="gex">
+          <div class="ecn">${esc(e.cn)}${spk(e.cn)}</div>
+          <div class="epy">${esc(e.pinyin)}</div>
+          <div class="evt">${esc(e.vi)}</div>
+        </div>`).join("")}
+    </div>`).join("");
+  document.getElementById("tabContent").innerHTML=html;
+}
+
+function renderPassage(L){
+  const p=L.passage;
+  const dlg=L.dialogue.map(d=>`
+    <div class="dialogue-line ${d.speaker}">
+      <span class="speaker">${d.speaker}:</span>
+      <span class="dcn cn">${esc(d.cn)}</span>${spk(d.cn)}
+      <div class="dpy">${esc(d.pinyin)}</div>
+      <div class="dvt">${esc(d.vi)}</div>
+    </div>`).join("");
+  document.getElementById("tabContent").innerHTML=`
+    <div class="passage-card">
+      <h3><span><i class="fa-solid fa-book-open"></i> Đoạn văn</span>${spk(p.cn,true)}</h3>
+      <div class="pcn cn">${esc(p.cn)}</div>
+      <div class="ppy">${esc(p.pinyin)}</div>
+      <div class="pvt" id="pvt">${esc(p.vi)}</div>
+      <button class="toggle-btn" onclick="document.getElementById('pvt').classList.toggle('show'); this.textContent = document.getElementById('pvt').classList.contains('show') ? '🙈 Ẩn nghĩa tiếng Việt' : '👀 Hiện nghĩa tiếng Việt';">👀 Hiện nghĩa tiếng Việt</button>
+    </div>
+    <div class="passage-card">
+      <h3><i class="fa-solid fa-comments"></i> Hội thoại</h3>
+      ${dlg}
+    </div>`;
+}
+
+function renderMatching(L){
+  const pairs=L.matching;
+  state.matchSelCN=null;state.matchScore=0;
+  const leftItems=shuffle(pairs.map((p,i)=>({text:p[0],idx:i})));
+  const rightItems=shuffle(pairs.map((p,i)=>({text:p[1],idx:i})));
+  const left=leftItems.map(it=>`<div class="match-item cn" data-side="cn" data-idx="${it.idx}" onclick="onMatchClick(this)"><span>${esc(it.text)}</span>${spk(it.text)}</div>`).join("");
+  const right=rightItems.map(it=>`<div class="match-item" data-side="vi" data-idx="${it.idx}" onclick="onMatchClick(this)">${esc(it.text)}</div>`).join("");
+  document.getElementById("tabContent").innerHTML=`
+    <div class="match-score" id="matchScore">Đã nối: 0 / ${pairs.length}</div>
+    <div class="match-wrap">
+      <div class="match-col">${left}</div>
+      <div class="match-col">${right}</div>
+    </div>
+    <button class="replay-btn" onclick="renderMatching(LESSONS[state.lessonIdx])"><i class="fa-solid fa-rotate"></i> Chơi lại</button>`;
+}
+
+function onMatchClick(el){
+  if(el.classList.contains("matched"))return;
+  const side=el.dataset.side;
+  const idx=parseInt(el.dataset.idx);
+  if(side==="cn"){
+    document.querySelectorAll('.match-item[data-side="cn"]').forEach(x=>x.classList.remove("selected"));
+    el.classList.add("selected");
+    state.matchSelCN={el,idx};
+  }else{
+    if(!state.matchSelCN){el.classList.add("wrong");setTimeout(()=>el.classList.remove("wrong"),500);return;}
+    if(state.matchSelCN.idx===idx){
+      state.matchSelCN.el.classList.remove("selected");
+      state.matchSelCN.el.classList.add("matched");
+      el.classList.add("matched");
+      state.matchSelCN=null;
+      state.matchScore++;
+      const total=LESSONS[state.lessonIdx].matching.length;
+      document.getElementById("matchScore").textContent=`Đã nối: ${state.matchScore} / ${total}`;
+      if(state.matchScore===total)document.getElementById("matchScore").innerHTML=`🎉 Hoàn thành! ${state.matchScore} / ${total}`;
+    }else{
+      const w1=state.matchSelCN.el;
+      w1.classList.add("wrong");el.classList.add("wrong");
+      setTimeout(()=>{w1.classList.remove("wrong","selected");el.classList.remove("wrong");},600);
+      state.matchSelCN=null;
+    }
+  }
+}
+
+function renderArrangement(L){
+  const total=L.arrangement.length;
+  if(state.arrIdx>=total)state.arrIdx=0;
+  if(state.arrIdx<0)state.arrIdx=total-1;
+  const cur=L.arrangement[state.arrIdx];
+  state.arrAns=[];
+  state.arrBank=shuffle(cur.words.map((w,i)=>({w,id:i+"_"+Math.random()})));
+  drawArrangement(cur,total);
+}
+
+function drawArrangement(cur,total){
+  const ansSentence = state.arrAns.map(x=>x.w).join("");
+  const ansHtml=state.arrAns.length===0
+    ? `<span class="empty-hint">Bấm vào các từ bên dưới để ghép câu...</span>`
+    : state.arrAns.map(item=>`<span class="word-chip ${item.cls||''}" onclick="arrRemove('${item.id}')">${esc(item.w)}</span>`).join("");
+  const bankHtml=state.arrBank.length===0
+    ? `<span class="empty-hint">(hết từ)</span>`
+    : state.arrBank.map(item=>`<span class="word-chip" onclick="arrAdd('${item.id}')">${esc(item.w)}</span>`).join("");
+  const playBtn = state.arrAns.length>0 ? spk(ansSentence) : '';
+  document.getElementById("tabContent").innerHTML=`
+    <div class="arr-wrap">
+      <div class="arr-counter">Câu ${state.arrIdx+1} / ${total}</div>
+      <div class="arr-hint">💡 ${esc(cur.vi)}</div>
+      <div class="arr-label">Câu của bạn: ${playBtn}</div>
+      <div class="arr-answer">${ansHtml}</div>
+      <div class="arr-label">Các từ:</div>
+      <div class="arr-bank">${bankHtml}</div>
+      <div class="arr-feedback" id="arrFb"></div>
+      <div class="arr-controls">
+        <button class="arr-btn primary" onclick="arrCheck()"><i class="fa-solid fa-check"></i> Kiểm tra</button>
+        <button class="arr-btn secondary" onclick="arrShowAnswer()"><i class="fa-solid fa-eye"></i> Đáp án</button>
+        <button class="arr-btn ghost" onclick="arrReset()"><i class="fa-solid fa-rotate"></i> Làm lại</button>
+        <button class="arr-btn ghost" onclick="arrPrev()"><i class="fa-solid fa-arrow-left"></i> Câu trước</button>
+        <button class="arr-btn ghost" onclick="arrNext()">Câu sau <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>`;
+}
+
+function arrAdd(id){const i=state.arrBank.findIndex(x=>x.id===id);if(i<0)return;const item=state.arrBank.splice(i,1)[0];state.arrAns.push(item);const L=LESSONS[state.lessonIdx];drawArrangement(L.arrangement[state.arrIdx],L.arrangement.length);}
+function arrRemove(id){const i=state.arrAns.findIndex(x=>x.id===id);if(i<0)return;const item=state.arrAns.splice(i,1)[0];item.cls="";state.arrBank.push(item);const L=LESSONS[state.lessonIdx];drawArrangement(L.arrangement[state.arrIdx],L.arrangement.length);}
+function arrCheck(){const L=LESSONS[state.lessonIdx];const correct=L.arrangement[state.arrIdx].words;if(state.arrAns.length!==correct.length){showFb(false,"❌ Bạn chưa ghép hết các từ!");return;}let allOk=true;for(let i=0;i<correct.length;i++){if(state.arrAns[i].w===correct[i]){state.arrAns[i].cls="correct";}else{state.arrAns[i].cls="wrong";allOk=false;}}drawArrangement(L.arrangement[state.arrIdx],L.arrangement.length);if(allOk)showFb(true,"🎉 Chính xác! Bạn giỏi quá!");else showFb(false,"❌ Chưa đúng! Hãy thử lại nhé.");}
+function arrShowAnswer(){const L=LESSONS[state.lessonIdx];const correct=L.arrangement[state.arrIdx].words;state.arrAns=correct.map((w,i)=>({w,id:"ans_"+i,cls:"correct"}));state.arrBank=[];drawArrangement(L.arrangement[state.arrIdx],L.arrangement.length);showFb(true,"📖 Đây là đáp án đúng.");}
+function arrReset(){renderArrangement(LESSONS[state.lessonIdx]);}
+function arrPrev(){state.arrIdx--;renderArrangement(LESSONS[state.lessonIdx]);}
+function arrNext(){state.arrIdx++;renderArrangement(LESSONS[state.lessonIdx]);}
+function showFb(ok,msg){const fb=document.getElementById("arrFb");if(!fb)return;fb.className="arr-feedback show "+(ok?"ok":"no");fb.textContent=msg;}
+
+// ========= Stroke order =========
+function renderStrokes(L){
+  // Extract unique Chinese characters from vocab.hanzi
+  const charsMap = {};
+  L.vocab.forEach(v => {
+    for (const ch of v.hanzi) {
+      const code = ch.codePointAt(0);
+      if (code >= 0x4E00 && code <= 0x9FFF) {
+        if (!charsMap[ch]) {
+          charsMap[ch] = {pinyin: v.pinyin, vi: v.vi};
+        }
+      }
+    }
+  });
+  const chars = Object.keys(charsMap);
+  const cardsHtml = chars.map((ch, idx) => `
+    <div class="stroke-card">
+      <div class="stroke-canvas" id="hw_${idx}"></div>
+      <div class="char">${esc(ch)} ${spk(ch)}</div>
+      <div class="pinfo">${esc(charsMap[ch].pinyin)} · ${esc(charsMap[ch].vi)}</div>
+      <div class="stroke-controls">
+        <button class="stroke-btn primary" onclick="hwAnim(${idx})"><i class="fa-solid fa-play"></i> Xem</button>
+        <button class="stroke-btn" onclick="hwQuiz(${idx})"><i class="fa-solid fa-pencil"></i> Tập viết</button>
+        <button class="stroke-btn" onclick="hwReset(${idx})"><i class="fa-solid fa-rotate"></i></button>
+      </div>
+    </div>
+  `).join("");
+  document.getElementById("tabContent").innerHTML = `
+    <div class="stroke-info">
+      <i class="fa-solid fa-circle-info"></i> Có <b>${chars.length}</b> chữ Hán trong bài. Bấm <b>Xem</b> để xem thứ tự nét, <b>Tập viết</b> để tự vẽ thử.
+    </div>
+    <div class="stroke-grid">${cardsHtml}</div>
+  `;
+  // Create HanziWriter instances
+  state.writers = {};
+  setTimeout(() => {
+    chars.forEach((ch, idx) => {
+      try {
+        state.writers[idx] = HanziWriter.create('hw_' + idx, ch, {
+          width: 150, height: 150, padding: 5,
+          strokeAnimationSpeed: 1, delayBetweenStrokes: 250,
+          showOutline: true, showCharacter: true,
+          strokeColor: '#43A047', outlineColor: '#ddd',
+          radicalColor: '#FFB300'
+        });
+      } catch(e) { console.warn('HW failed', ch, e); }
+    });
+  }, 50);
+}
+function hwAnim(idx){if(state.writers[idx])state.writers[idx].animateCharacter();}
+function hwQuiz(idx){if(state.writers[idx]){state.writers[idx].hideCharacter();state.writers[idx].quiz({onComplete:function(){setTimeout(()=>{state.writers[idx].showCharacter();},500);}});}}
+function hwReset(idx){if(state.writers[idx]){state.writers[idx].showCharacter();}}
+function renderSongs(L){
+  if(!L.songs||L.songs.length===0){
+    document.getElementById("tabContent").innerHTML='<div class="passage-card"><p style="text-align:center;color:var(--muted);">Bài này chưa có bài hát.</p></div>';
+    return;
+  }
+  const html=L.songs.map(song=>{
+    const allLyrics=song.lines.map(l=>l.cn).join("，");
+    const lines=song.lines.map((l,i)=>`
+      <div class="song-line">
+        <div class="song-line-num">${i+1}</div>
+        <div class="song-line-text">
+          <div class="song-line-cn">${esc(l.cn)}${spk(l.cn)}</div>
+          <div class="song-line-py">${esc(l.pinyin)}</div>
+          <div class="song-line-vi">${esc(l.vi)}</div>
+        </div>
+      </div>
+    `).join("");
+    const allEnc = JSON.stringify(allLyrics).replace(/"/g, '&quot;');
+    return `
+      <div class="song-card">
+        <div class="song-title">
+          <i class="fa-solid fa-music song-icon"></i>
+          <div>
+            <h3 class="cn">${esc(song.title_cn)}</h3>
+            <div class="vi-title">${esc(song.title_vi)}</div>
+          </div>
+          <button class="song-play-btn" onclick="speak(${allEnc})"><i class="fa-solid fa-play"></i> Hát cả bài</button>
+        </div>
+        ${lines}
+      </div>
+    `;
+  }).join("");
+  document.getElementById("tabContent").innerHTML=html;
+}
+
+
+renderHome();
+</script>
+</body>
+</html>
