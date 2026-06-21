@@ -244,6 +244,7 @@ function speak(text) {
   u.lang = zhVoice ? zhVoice.lang : "zh-TW";
   u.rate = 0.7;
   u.pitch = 1.0;
+  u.volume = 1.0;
   window.speechSynthesis.speak(u);
   
 	if (!zhVoice) {

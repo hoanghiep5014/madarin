@@ -239,7 +239,7 @@ function speak(text) {
   );
   if (zhVoice) u.voice = zhVoice;
   u.lang  = zhVoice ? zhVoice.lang : 'zh-TW'; // iPhone có zh-CN sẵn
-  u.rate  = 0.9;   // ✅ không để 0.7 (iOS hay bug)
+  u.rate  = 0.7;   // ✅ không để 0.7 (iOS hay bug)
   u.pitch = 1.0;
   u.volume = 1.0;
 
